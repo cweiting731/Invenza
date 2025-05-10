@@ -30,8 +30,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     final password = _passwordController.text.trim();
 
     // 模擬登入邏輯 發送後端確認
-    if (username == "admin" && password == "admin") {
+    if (username == "admin" && password == "123456") {
       Employee employee = Employee(username, "000000001", Association(null, null));
+      Navigator.pushReplacementNamed(context, '/home');
       log('succeed logging in');
       ref.read(authProvider.notifier).state = employee;
     } else {
