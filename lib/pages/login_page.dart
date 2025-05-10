@@ -81,6 +81,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       maxHeight: contentHeight,
                     ),
                     child: _buildLoginForm(),
+                  )
                 );
               },
             ),
