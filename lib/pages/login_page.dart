@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
@@ -22,6 +23,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   String? _errorMessage;
 
   void _login() {
+    print('check data pattern');
     if (!_formKey.currentState!.validate()) return;
 
     final username = _usernameController.text.trim();
@@ -39,7 +41,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('build login page');
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF4A90E2),
+        leading: const Icon(Icons.insert_emoticon_sharp),
+        actions: [
+          PopupMenuButton(
+            key: const ValueKey('login_page_app_bar'),
+            tooltip: '設定',
+            icon: Icon(Icons.settings),
+            padding: const EdgeInsets.all(10.0),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'problem', child: Text('問題回報')),
+              PopupMenuItem(value: 'logout', child: Text('登出')),
+            ])
+        ],
+      ),
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
