@@ -1,4 +1,4 @@
-import 'package:invenza/models/Contactable.dart';
+import 'package:invenza/interface/contactable.dart';
 import 'package:invenza/models/association.dart';
 
 class Employee implements Contactable {
