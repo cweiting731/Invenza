@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
@@ -22,14 +23,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   String? _errorMessage;
 
   void _login() {
+    print('check data pattern');
     if (!_formKey.currentState!.validate()) return;
 
     final username = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
     // 模擬登入邏輯 發送後端確認
-    if (username == "admin" && password == "admin") {
+    if (username == "admin" && password == "123456") {
       Employee employee = Employee(username, "000000001", Association(null, null));
+      Navigator.pushReplacementNamed(context, '/home');
       log('succeed logging in');
       ref.read(authProvider.notifier).state = employee;
     } else {
@@ -39,81 +42,140 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    print('build login page');
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFF4A90E2),
+        leading: const Icon(Icons.insert_emoticon_sharp),
+        actions: [
+          PopupMenuButton(
+            key: const ValueKey('login_page_app_bar'),
+            tooltip: '設定',
+            icon: Icon(Icons.settings),
+            padding: const EdgeInsets.all(10.0),
+            itemBuilder: (context) => [
+              PopupMenuItem(value: 'problem', child: Text('問題回報')),
+              PopupMenuItem(value: 'logout', child: Text('登出')),
+            ])
+        ],
+      ),
       body: SafeArea(
-        child: Center (
+        child: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  TextFormField(
-                    controller: _usernameController,
-                    maxLength: 20,
-                    decoration: InputDecoration(
-                      labelText: '帳號',
-                      labelStyle: appTheme.textTheme.titleMedium,
-                      prefixIcon: Icon(Icons.account_circle),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '帳號不能為空';
-                      }
-                      if (value.length > 20) {
-                        return '帳號密碼最多20個字符';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 12),
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: _obscurePassword,
-                    maxLength: 20,
-                    decoration: InputDecoration(
-                      labelText: '密碼',
-                      labelStyle: appTheme.textTheme.titleMedium,
-                      prefixIcon: Icon(Icons.lock),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _obscurePassword = !_obscurePassword;
-                          });
-                        },
-                        icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return '密碼不能為空';
-                      }
-                      if (value.length < 6) {
-                        return '密碼應大於6位';
-                      }
-                      if (value.length > 20) {
-                        return '帳號密碼最多20個字符';
-                      }
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(onPressed: _login, child: Text("登入")),
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                double screenWidth = constraints.maxWidth;
+                double contentWidth = screenWidth > 700
+                    ? 600 // 大螢幕
+                    : screenWidth * 0.85; // 小螢幕
+                double screenHeight = constraints.maxHeight;
+                double contentHeight = screenHeight > 600
+                    ? 500
+                    : screenHeight * 0.85;
 
-                  if (_errorMessage != null)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 8.0),
-                      child: Text(
-                          _errorMessage!,
-                          style: TextStyle(color: appTheme.colorScheme.error)
-                      ),
+                return Center(
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      maxWidth: contentWidth,
+                      maxHeight: contentHeight,
                     ),
-                ],
-              ),
-            )
+                    child: _buildLoginForm(),
+                  )
+                );
+              },
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildLoginForm() {
+    print('build login form');
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Row(children: [Text('登入'),]),
+              _buildAccountTextFormField(),
+              SizedBox(height: 40,),
+              _buildPasswordTextFormField(),
+              Row(children: [Text('忘記密碼'),],),
+              SizedBox(height: 80),
+              ElevatedButton(onPressed: _login, child: Text('登入')),
+              if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Text(
+                    _errorMessage!,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAccountTextFormField() {
+    print('build account input');
+    return TextFormField(
+      controller: _usernameController,
+      maxLength: 20,
+      decoration: InputDecoration(
+        labelText: '帳號',
+        prefixIcon: Icon(Icons.account_circle),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '帳號不能為空';
+        }
+        if (value.length > 20) {
+          return '帳號密碼最多20個字符';
+        }
+        return null;
+      },
+    );
+  }
+
+  Widget _buildPasswordTextFormField() {
+    print('build password input');
+    return TextFormField(
+      controller: _passwordController,
+      obscureText: _obscurePassword,
+      maxLength: 20,
+      decoration: InputDecoration(
+        labelText: '密碼',
+        // labelStyle: appTheme.textTheme.titleMedium,
+        prefixIcon: Icon(Icons.lock),
+        suffixIcon: IconButton(
+          onPressed: () {
+            setState(() {
+              _obscurePassword = !_obscurePassword;
+            });
+          },
+          icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return '密碼不能為空';
+        }
+        if (value.length < 6) {
+          return '密碼應大於6位';
+        }
+        if (value.length > 20) {
+          return '帳號密碼最多20個字符';
+        }
+        return null;
+      },
     );
   }
 }
