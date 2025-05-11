@@ -22,24 +22,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   bool _obscurePassword = true;
   String? _errorMessage;
 
-  void _login() {
-    print('check data pattern');
-    if (!_formKey.currentState!.validate()) return;
-
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
-
-    // 模擬登入邏輯 發送後端確認
-    if (username == "admin" && password == "123456") {
-      Employee employee = Employee(username, "000000001", Association(null, null));
-      Navigator.pushReplacementNamed(context, '/home');
-      log('succeed logging in');
-      ref.read(authProvider.notifier).state = employee;
-    } else {
-      setState(() => _errorMessage = "帳號或密碼錯誤");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     print('build login page');
@@ -109,7 +91,14 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               _buildPasswordTextFormField(),
               Row(children: [Text('忘記密碼'),],),
               SizedBox(height: 80),
-              ElevatedButton(onPressed: _login, child: Text('登入')),
+              ElevatedButton(
+                onPressed: () async {
+                  String account = _accountController.text.trim();
+                  String password = _passwordController.text.trim();
+                  await ref.read(authProvider.notifier).login(account, password, _formKey);
+                },
+                child: Text('登入')
+              ),
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
