@@ -24,7 +24,22 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
+    ref.listen<AsyncValue<void>>(authProvider, (prev, next) {
+      next.whenOrNull(
+        data: (_) {
+          // 登入成功 -> home page
+          Navigator.pushReplacementNamed(context, '/home');
+        },
+        error: (err, _) {
+          // 顯示錯誤
+          setState(() => _errorMessage = err.toString());
+        },
+      );
+    });
+
     print('build login page');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF58BFE3),
