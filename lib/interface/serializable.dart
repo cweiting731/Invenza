@@ -1,3 +1,4 @@
 abstract class Serializable {
-  void serialization();
+  String serialization();
+  Map<String, dynamic> serialization_json();
 }
