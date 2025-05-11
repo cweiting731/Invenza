@@ -17,7 +17,7 @@ class LoginPage extends ConsumerStatefulWidget {
 
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _accountController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   String? _errorMessage;
@@ -45,7 +45,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     print('build login page');
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF4A90E2),
+        backgroundColor: Color(0xFF58BFE3),
         leading: const Icon(Icons.insert_emoticon_sharp),
         actions: [
           PopupMenuButton(
@@ -115,6 +115,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
                     _errorMessage!,
+                    style: TextStyle(color: Colors.red),
                   ),
                 ),
             ],
@@ -127,7 +128,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget _buildAccountTextFormField() {
     print('build account input');
     return TextFormField(
-      controller: _usernameController,
+      controller: _accountController,
       maxLength: 20,
       decoration: InputDecoration(
         labelText: '帳號',
