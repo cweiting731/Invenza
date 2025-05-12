@@ -17,35 +17,32 @@ class LoginPage extends ConsumerStatefulWidget {
 
 class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _usernameController = TextEditingController();
+  final _accountController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   String? _errorMessage;
 
-  void _login() {
-    print('check data pattern');
-    if (!_formKey.currentState!.validate()) return;
-
-    final username = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
-
-    // 模擬登入邏輯 發送後端確認
-    if (username == "admin" && password == "123456") {
-      Employee employee = Employee(username, "000000001", Association(null, null));
-      Navigator.pushReplacementNamed(context, '/home');
-      log('succeed logging in');
-      ref.read(authProvider.notifier).state = employee;
-    } else {
-      setState(() => _errorMessage = "帳號或密碼錯誤");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
+    ref.listen<AsyncValue<void>>(authProvider, (prev, next) {
+      next.whenOrNull(
+        data: (_) {
+          // 登入成功 -> home page
+          Navigator.pushReplacementNamed(context, '/home');
+        },
+        error: (err, _) {
+          // 顯示錯誤
+          setState(() => _errorMessage = err.toString());
+        },
+      );
+    });
+
     print('build login page');
+
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF4A90E2),
+        backgroundColor: Color(0xFF58BFE3),
         leading: const Icon(Icons.insert_emoticon_sharp),
         actions: [
           PopupMenuButton(
@@ -109,12 +106,20 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               _buildPasswordTextFormField(),
               Row(children: [Text('忘記密碼'),],),
               SizedBox(height: 80),
-              ElevatedButton(onPressed: _login, child: Text('登入')),
+              ElevatedButton(
+                onPressed: () async {
+                  String account = _accountController.text.trim();
+                  String password = _passwordController.text.trim();
+                  await ref.read(authProvider.notifier).login(account, password, _formKey);
+                },
+                child: Text('登入')
+              ),
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Text(
                     _errorMessage!,
+                    style: TextStyle(color: Colors.red),
                   ),
                 ),
             ],
@@ -127,7 +132,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   Widget _buildAccountTextFormField() {
     print('build account input');
     return TextFormField(
-      controller: _usernameController,
+      controller: _accountController,
       maxLength: 20,
       decoration: InputDecoration(
         labelText: '帳號',
