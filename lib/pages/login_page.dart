@@ -9,6 +9,7 @@ import 'package:invenza/theme/theme.dart';
 import 'package:invenza/widgets/dialog_utils.dart';
 
 import '../providers/auth_provider.dart';
+import '../providers/forgot_password_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
