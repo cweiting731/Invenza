@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,16 +32,29 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
       final data = jsonDecode(response.body);
       if (response.statusCode == 200 && data['success'] == true) {
+        if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null)) {
+          throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
+        }
         Employee employee = Employee(data['name'], data['id'], Association(data['email'], data['phone']));
-        print(employee.getName());
-        print(employee.getID());
-        print(employee.getAssociation());
+        // print(employee.getName());
+        // print(employee.getID());
+        // print(employee.getAssociation());
         state = AsyncValue.data(employee); // 表示成功
       } else {
         throw Exception(data['message'] ?? '登入失敗');
       }
-    } catch (e, st) {
-      state = AsyncValue.error(e, st); // 錯誤會回傳到 UI
+    }
+    on SocketException catch (e, st){
+      state = AsyncValue.error(Exception('無法連接伺服器，請檢查網路連線'), st);
+    }
+    on FormatException catch (e, st) {
+      state = AsyncValue.error(Exception('資料格式錯誤，請聯繫開發人員'), st);
+    }
+    on http.ClientException catch (e, st) {
+      state = AsyncValue.error(Exception('連線失敗，請確認伺服器是否有開啟'), st);
+    }
+    catch (e, st) {
+      state = AsyncValue.error(e, st);
     }
   }
 
