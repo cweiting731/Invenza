@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/theme/theme.dart';
+import 'package:invenza/widgets/dialog_utils.dart';
 
 import '../providers/auth_provider.dart';
 
@@ -25,14 +26,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
-    ref.listen<AsyncValue<void>>(authProvider, (prev, next) {
-      next.whenOrNull(
+    ref.listen<AsyncValue<Employee?>>(authProvider, (prev, next) {
+      next.when(
+        loading: () {
+          DialogUtils.showLoading(context, '登入中', message: '請稍後...');
+        },
         data: (_) {
           // 登入成功 -> home page
+          DialogUtils.dismiss(context);
           Navigator.pushReplacementNamed(context, '/home');
         },
         error: (err, _) {
           // 顯示錯誤
+          DialogUtils.dismiss(context);
           setState(() => _errorMessage = err.toString());
         },
       );
