@@ -16,7 +16,7 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _loginFormKey = GlobalKey<FormState>();
   final _accountController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -96,7 +96,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Form(
-          key: _formKey,
+          key: _loginFormKey,
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -110,7 +110,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 onPressed: () async {
                   String account = _accountController.text.trim();
                   String password = _passwordController.text.trim();
-                  await ref.read(authProvider.notifier).login(account, password, _formKey);
+                  await ref.read(authProvider.notifier).login(account, password, _loginFormKey);
                 },
                 child: Text('登入')
               ),
