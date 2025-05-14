@@ -6,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/theme/theme.dart';
+import 'package:invenza/widgets/dialog_utils.dart';
 
 import '../providers/auth_provider.dart';
+import '../providers/forgot_password_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -16,7 +18,7 @@ class LoginPage extends ConsumerStatefulWidget {
 }
 
 class _LoginPageState extends ConsumerState<LoginPage> {
-  final _formKey = GlobalKey<FormState>();
+  final _loginFormKey = GlobalKey<FormState>();
   final _accountController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
@@ -25,14 +27,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
-    ref.listen<AsyncValue<void>>(authProvider, (prev, next) {
-      next.whenOrNull(
+    ref.listen<AsyncValue<Employee?>>(authProvider, (prev, next) {
+      next.when(
+        loading: () {
+          DialogUtils.showLoading(context, '登入中', message: '請稍後...');
+        },
         data: (_) {
           // 登入成功 -> home page
+          DialogUtils.dismiss(context);
           Navigator.pushReplacementNamed(context, '/home');
         },
         error: (err, _) {
           // 顯示錯誤
+          DialogUtils.dismiss(context);
           setState(() => _errorMessage = err.toString());
         },
       );
@@ -96,7 +103,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Form(
-          key: _formKey,
+          key: _loginFormKey,
           child: Column(
             // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -104,13 +111,13 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               _buildAccountTextFormField(),
               SizedBox(height: 40,),
               _buildPasswordTextFormField(),
-              Row(children: [Text('忘記密碼'),],),
+              Row(children: [TextButton(onPressed: () => _showForgotPasswordBottomSheet(context, ref), child: Text('忘記密碼'))],),
               SizedBox(height: 80),
               ElevatedButton(
                 onPressed: () async {
                   String account = _accountController.text.trim();
                   String password = _passwordController.text.trim();
-                  await ref.read(authProvider.notifier).login(account, password, _formKey);
+                  await ref.read(authProvider.notifier).login(account, password, _loginFormKey);
                 },
                 child: Text('登入')
               ),
@@ -181,6 +188,84 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         }
         return null;
       },
+    );
+  }
+
+  void _showForgotPasswordBottomSheet(BuildContext context, WidgetRef ref) {
+    ref.read(forgotPasswordProvider.notifier).reset();
+    final emailController = TextEditingController();
+    final forgotPasswordFormKey = GlobalKey<FormState>();
+    String? info;
+    Color infoColor = Colors.black87;
+
+    print('showForgotPasswordBottomSheet');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (context) {
+        return Consumer(builder: (context, ref, _) {
+          final forgotState = ref.watch(forgotPasswordProvider);
+          if (forgotState.isLoading) {
+            info = '傳送中';
+            infoColor = Colors.black87;
+          } else if (forgotState.hasError) {
+            info = forgotState.error!.toString();
+            infoColor = Colors.red;
+          } else if (forgotState.hasValue && forgotState.value != '') {
+            info = forgotState.value;
+            infoColor = Colors.green;
+          }
+          
+          
+          return Form(
+            key: forgotPasswordFormKey,
+            child: Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+                left: 24,
+                right: 24,
+                top: 24,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(children: [Text('忘記密碼')],),
+                  SizedBox(height: 24,),
+                  TextFormField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      hintText: '請輸入註冊時使用的email',
+                      prefixIcon: Icon(Icons.email_outlined),
+                    ),
+                    validator: (value) {
+                      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+                      if (value == null) return 'email值不能為空';
+                      if (!emailRegex.hasMatch(value)) return 'email格式錯誤';
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16,),
+                  ElevatedButton(
+                    onPressed: () async {
+                      final email = emailController.text.trim();
+                      await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
+                    },
+                    child: Text('送出'),
+                  ),
+                  if (info != null) 
+                    Padding(
+                      padding: EdgeInsets.only(top: 16),
+                      child: Text(info!, style: TextStyle(color: infoColor),),
+                    )
+                ],
+              ),
+            )
+          );
+        });
+      }
     );
   }
 }
