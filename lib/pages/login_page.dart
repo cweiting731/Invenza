@@ -52,7 +52,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFF58BFE3),
         leading: const Icon(Icons.insert_emoticon_sharp),
         actions: [
           PopupMenuButton(
@@ -85,7 +84,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       maxWidth: contentWidth,
-                      maxHeight: contentHeight,
+                      // maxHeight: contentHeight,
                     ),
                     child: _buildLoginForm(),
                   )
@@ -108,11 +107,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         child: Form(
           key: _loginFormKey,
           child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
             children: [
               Row(children: [Text('登入'),]),
+              SizedBox(height: 20,),
               _buildAccountTextFormField(),
-              SizedBox(height: 40,),
+              SizedBox(height: 20,),
               _buildPasswordTextFormField(),
               Row(children: [TextButton(onPressed: () => _showForgotPasswordBottomSheet(context, ref), child: Text('忘記密碼'))],),
               SizedBox(height: 80),
@@ -212,7 +212,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           final forgotState = ref.watch(forgotPasswordProvider);
           final api = ref.read(apiClientProvider);
           if (forgotState.isLoading) {
-            info = '傳送中';
+            info = '傳送中...';
             infoColor = Colors.black87;
           } else if (forgotState.hasError) {
             info = api.formatErrorMessage(forgotState.error);
