@@ -8,30 +8,41 @@ import 'package:invenza/models/association.dart';
 import 'package:invenza/models/auth_data.dart';
 import 'package:invenza/models/condition.dart';
 import 'package:invenza/models/employee.dart';
+import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/log_provider.dart';
+import 'package:invenza/services/api_client.dart';
+
+import '../services/log_service.dart';
 
 final authProvider = StateNotifierProvider<AuthController, AsyncValue<Employee?>>(
-    (ref) => AuthController(),
+  (ref) {
+    final logger = ref.read(logProvider);
+    final api = ref.read(apiClientProvider);
+    return AuthController(logger, api);
+  }
 );
 
 class AuthController extends StateNotifier<AsyncValue<Employee?>> {
-  AuthController() : super(const AsyncValue.data(null));
+  final LogService _logger;
+  final ApiClient _api;
+
+  AuthController(this._logger, this._api)
+      : super(const AsyncValue.data(null));
 
   Future<void> login(String account, String password, GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return; // 確認account, password格式是否正確
 
     state = const AsyncValue.loading(); // 設定狀態為loading
-    
-    try {
-      final response = await http.post(
-        Uri.parse('http://localhost:8080/login'),
-        headers: {'Content-Type': 'application/json'},
-        body: Condition(
-            'Login', AuthData(account, password).serialization_json()
-            ).serialization(),
-      );
 
-      final data = jsonDecode(response.body);
-      if (response.statusCode == 200 && data['success'] == true) {
+    try {
+      final data = await _api.post(
+        'http://localhost:8080/api/login',
+        Condition(
+          'Login',
+          AuthData(account, password).serialization_json()
+        )
+      );
+      if (data['success'] == true) {
         if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null)) {
           throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
         }
@@ -40,20 +51,10 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
         // print(employee.getID());
         // print(employee.getAssociation());
         state = AsyncValue.data(employee); // 表示成功
-      } else {
-        throw Exception(data['message'] ?? '登入失敗');
       }
     }
-    on SocketException catch (e, st){
-      state = AsyncValue.error(Exception('無法連接伺服器，請檢查網路連線'), st);
-    }
-    on FormatException catch (e, st) {
-      state = AsyncValue.error(Exception('資料格式錯誤，請聯繫開發人員'), st);
-    }
-    on http.ClientException catch (e, st) {
-      state = AsyncValue.error(Exception('連線失敗，請確認伺服器是否有開啟'), st);
-    }
     catch (e, st) {
+      print(e.toString());
       state = AsyncValue.error(e, st);
     }
   }
