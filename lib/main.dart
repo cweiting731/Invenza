@@ -24,7 +24,8 @@ class Invenza extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Invenza',
-      initialRoute: '/',
+      initialRoute: '/login',
+      theme: customTheme,
       routes: routes,
     );
   }
