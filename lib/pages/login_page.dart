@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
+import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/services/api_client.dart';
 import 'package:invenza/theme/theme.dart';
 import 'package:invenza/widgets/dialog_utils.dart';
 
@@ -26,6 +28,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final api = ref.read(apiClientProvider);
     // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
     ref.listen<AsyncValue<Employee?>>(authProvider, (prev, next) {
       next.when(
@@ -40,7 +43,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         error: (err, _) {
           // 顯示錯誤
           DialogUtils.dismiss(context);
-          setState(() => _errorMessage = err.toString());
+          setState(() => _errorMessage = api.formatErrorMessage(err));
         },
       );
     });
@@ -207,11 +210,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       builder: (context) {
         return Consumer(builder: (context, ref, _) {
           final forgotState = ref.watch(forgotPasswordProvider);
+          final api = ref.read(apiClientProvider);
           if (forgotState.isLoading) {
             info = '傳送中';
             infoColor = Colors.black87;
           } else if (forgotState.hasError) {
-            info = forgotState.error!.toString();
+            info = api.formatErrorMessage(forgotState.error);
             infoColor = Colors.red;
           } else if (forgotState.hasValue && forgotState.value != '') {
             info = forgotState.value;
