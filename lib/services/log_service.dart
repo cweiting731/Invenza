@@ -25,8 +25,8 @@ class LogService {
 
   List<LogEntry> getLogs() => List.unmodifiable(_logs);
 
-  String exportAsJson() {
-    return jsonEncode(_logs.map((e) => e.toJson()).toList());
+  List exportAsJson() {
+    return _logs.map((e) => e.toJson()).toList();
   }
 }
 
