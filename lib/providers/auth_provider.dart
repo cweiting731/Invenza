@@ -51,6 +51,8 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
         // print(employee.getID());
         // print(employee.getAssociation());
         state = AsyncValue.data(employee); // 表示成功
+      } else {
+        throw Exception(data['message']);
       }
     }
     catch (e, st) {

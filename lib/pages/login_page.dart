@@ -6,12 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/log_provider.dart';
 import 'package:invenza/services/api_client.dart';
+import 'package:invenza/services/log_service.dart';
 import 'package:invenza/theme/theme.dart';
 import 'package:invenza/widgets/dialog_utils.dart';
 
 import '../providers/auth_provider.dart';
 import '../providers/forgot_password_provider.dart';
+import '../widgets/forgot_password_bottom_sheet.dart';
+import '../widgets/issue_report.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -29,6 +33,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final api = ref.read(apiClientProvider);
+    final logger = ref.read(logProvider);
     // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
     ref.listen<AsyncValue<Employee?>>(authProvider, (prev, next) {
       next.when(
@@ -37,59 +42,78 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         },
         data: (_) {
           // 登入成功 -> home page
+          logger.info('login page: successfully');
           DialogUtils.dismiss(context);
           Navigator.pushReplacementNamed(context, '/home');
         },
         error: (err, _) {
           // 顯示錯誤
+          logger.error('login page: ${err.toString()}');
           DialogUtils.dismiss(context);
           setState(() => _errorMessage = api.formatErrorMessage(err));
         },
       );
     });
 
-    print('build login page');
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // 👉 主動取消目前的輸入焦點（keyboard收起來）
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: const Icon(Icons.insert_emoticon_sharp),
+          actions: [
+            Builder(builder: (context) {
+              return PopupMenuButton<String>(
+                tooltip: '設定',
+                icon: Icon(Icons.settings),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(value: 'issue', child: Text('問題回報')),
+                  const PopupMenuItem(value: 'logout', child: Text('登出')),
+                ],
+                onSelected: (value) {
+                  if (value == 'issue') {
+                    logger.info('login page: issue report is pressed');
+                    showDialog(
+                      context: context,
+                      useRootNavigator: true,
+                      builder: (_) => const Dialog(
+                        child: IssueReport(),
+                      ),
+                    );
+                  }
+                },
+              );
+            }),
+          ],
+        ),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  double screenWidth = constraints.maxWidth;
+                  double contentWidth = screenWidth > 700
+                      ? 600 // 大螢幕
+                      : screenWidth * 0.85; // 小螢幕
+                  double screenHeight = constraints.maxHeight;
+                  double contentHeight = screenHeight > 600
+                      ? 500
+                      : screenHeight * 0.85;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.insert_emoticon_sharp),
-        actions: [
-          PopupMenuButton(
-            key: const ValueKey('login_page_app_bar'),
-            tooltip: '設定',
-            icon: Icon(Icons.settings),
-            padding: const EdgeInsets.all(10.0),
-            itemBuilder: (context) => [
-              PopupMenuItem(value: 'problem', child: Text('問題回報')),
-              PopupMenuItem(value: 'logout', child: Text('登出')),
-            ])
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                double screenWidth = constraints.maxWidth;
-                double contentWidth = screenWidth > 700
-                    ? 600 // 大螢幕
-                    : screenWidth * 0.85; // 小螢幕
-                double screenHeight = constraints.maxHeight;
-                double contentHeight = screenHeight > 600
-                    ? 500
-                    : screenHeight * 0.85;
-
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: contentWidth,
-                      // maxHeight: contentHeight,
-                    ),
-                    child: _buildLoginForm(),
-                  )
-                );
-              },
+                  return Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: contentWidth,
+                          // maxHeight: contentHeight,
+                        ),
+                        child: _buildLoginForm(logger),
+                      )
+                  );
+                },
+              ),
             ),
           ),
         ),
@@ -97,7 +121,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Widget _buildLoginForm() {
+  Widget _buildLoginForm(logger) {
     print('build login form');
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -107,17 +131,33 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         child: Form(
           key: _loginFormKey,
           child: Column(
-
             children: [
               Row(children: [Text('登入'),]),
               SizedBox(height: 20,),
               _buildAccountTextFormField(),
               SizedBox(height: 20,),
               _buildPasswordTextFormField(),
-              Row(children: [TextButton(onPressed: () => _showForgotPasswordBottomSheet(context, ref), child: Text('忘記密碼'))],),
+              Row(children: [
+                TextButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus(); // for 收起鍵盤
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius
+                              .circular(16))
+                      ),
+                      builder: (context) => const ForgotPasswordBottomSheet(),
+                    );
+                  },
+                  child: const Text('忘記密碼'),
+                ),
+              ],),
               SizedBox(height: 80),
               ElevatedButton(
                 onPressed: () async {
+                  logger.info('login page: login button is pressed');
                   String account = _accountController.text.trim();
                   String password = _passwordController.text.trim();
                   await ref.read(authProvider.notifier).login(account, password, _loginFormKey);
@@ -191,85 +231,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         }
         return null;
       },
-    );
-  }
-
-  void _showForgotPasswordBottomSheet(BuildContext context, WidgetRef ref) {
-    ref.read(forgotPasswordProvider.notifier).reset();
-    final emailController = TextEditingController();
-    final forgotPasswordFormKey = GlobalKey<FormState>();
-    String? info;
-    Color infoColor = Colors.black87;
-
-    print('showForgotPasswordBottomSheet');
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (context) {
-        return Consumer(builder: (context, ref, _) {
-          final forgotState = ref.watch(forgotPasswordProvider);
-          final api = ref.read(apiClientProvider);
-          if (forgotState.isLoading) {
-            info = '傳送中...';
-            infoColor = Colors.black87;
-          } else if (forgotState.hasError) {
-            info = api.formatErrorMessage(forgotState.error);
-            infoColor = Colors.red;
-          } else if (forgotState.hasValue && forgotState.value != '') {
-            info = forgotState.value;
-            infoColor = Colors.green;
-          }
-          
-          
-          return Form(
-            key: forgotPasswordFormKey,
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-                left: 24,
-                right: 24,
-                top: 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(children: [Text('忘記密碼')],),
-                  SizedBox(height: 24,),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: '請輸入註冊時使用的email',
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
-                    validator: (value) {
-                      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (value == null) return 'email值不能為空';
-                      if (!emailRegex.hasMatch(value)) return 'email格式錯誤';
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16,),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final email = emailController.text.trim();
-                      await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
-                    },
-                    child: Text('送出'),
-                  ),
-                  if (info != null) 
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(info!, style: TextStyle(color: infoColor),),
-                    )
-                ],
-              ),
-            )
-          );
-        });
-      }
     );
   }
 }
