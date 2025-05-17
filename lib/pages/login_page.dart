@@ -13,6 +13,7 @@ import 'package:invenza/widgets/dialog_utils.dart';
 import '../providers/auth_provider.dart';
 import '../providers/forgot_password_provider.dart';
 import '../widgets/forgot_password_bottom_sheet.dart';
+import '../widgets/issue_report.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -65,9 +66,21 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 tooltip: '設定',
                 icon: Icon(Icons.settings),
                 itemBuilder: (context) => [
-                  const PopupMenuItem(value: 'problem', child: Text('問題回報')),
+                  const PopupMenuItem(value: 'issue', child: Text('問題回報')),
                   const PopupMenuItem(value: 'logout', child: Text('登出')),
                 ],
+                onSelected: (value) {
+                  if (value == 'issue') {
+                    logger.info('login page: issue report is pressed');
+                    showDialog(
+                      context: context,
+                      useRootNavigator: true,
+                      builder: (_) => const Dialog(
+                        child: IssueReport(),
+                      ),
+                    );
+                  }
+                },
               );
             }),
           ],
