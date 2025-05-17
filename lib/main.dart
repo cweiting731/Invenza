@@ -7,6 +7,8 @@ import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/theme/theme.dart';
 
 void main() {
+  final colorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF51B5FF));
+  printColorScheme(colorScheme);
   runApp(
       ProviderScope(
         child: Invenza(),
@@ -24,7 +26,8 @@ class Invenza extends ConsumerWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Invenza',
-      initialRoute: '/',
+      initialRoute: '/login',
+      theme: customTheme,
       routes: routes,
     );
   }
