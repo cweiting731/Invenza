@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/forgot_password_provider.dart';
+import 'package:invenza/providers/log_provider.dart';
 
 class ForgotPasswordBottomSheet extends ConsumerStatefulWidget {
   const ForgotPasswordBottomSheet({super.key});
@@ -24,6 +25,7 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
   Widget build(BuildContext context) {
     final forgotState = ref.watch(forgotPasswordProvider);
     final api = ref.read(apiClientProvider);
+    final logger = ref.read(logProvider);
 
     String? info;
     Color infoColor = Colors.black87;
@@ -31,9 +33,11 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
     if (forgotState.isLoading) {
       info = '傳送中...';
     } else if (forgotState.hasError) {
+      logger.error('forgot password: ${forgotState.error}');
       info = api.formatErrorMessage(forgotState.error);
       infoColor = Colors.red;
     } else if (forgotState.hasValue && forgotState.value != '') {
+      logger.info('forgot password: email transfer successfully');
       info = forgotState.value;
       infoColor = Colors.green;
     }
@@ -69,6 +73,7 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () async {
+                logger.info('forgot password: transfer button is pressed');
                 final email = emailController.text.trim();
                 await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
               },

@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/log_provider.dart';
 import 'package:invenza/services/api_client.dart';
+import 'package:invenza/services/log_service.dart';
 import 'package:invenza/theme/theme.dart';
 import 'package:invenza/widgets/dialog_utils.dart';
 
@@ -31,6 +33,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final api = ref.read(apiClientProvider);
+    final logger = ref.read(logProvider);
     // 偵測auth_provider狀態，來切換頁面與顯示錯誤訊息
     ref.listen<AsyncValue<Employee?>>(authProvider, (prev, next) {
       next.when(
@@ -39,18 +42,18 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         },
         data: (_) {
           // 登入成功 -> home page
+          logger.info('login page: successfully');
           DialogUtils.dismiss(context);
           Navigator.pushReplacementNamed(context, '/home');
         },
         error: (err, _) {
           // 顯示錯誤
+          logger.error('login page: ${err.toString()}');
           DialogUtils.dismiss(context);
           setState(() => _errorMessage = api.formatErrorMessage(err));
         },
       );
     });
-
-    print('build login page');
 
     return GestureDetector(
       onTap: () {
@@ -106,7 +109,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                           maxWidth: contentWidth,
                           // maxHeight: contentHeight,
                         ),
-                        child: _buildLoginForm(),
+                        child: _buildLoginForm(logger),
                       )
                   );
                 },
@@ -118,7 +121,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
     );
   }
 
-  Widget _buildLoginForm() {
+  Widget _buildLoginForm(logger) {
     print('build login form');
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
@@ -154,6 +157,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               SizedBox(height: 80),
               ElevatedButton(
                 onPressed: () async {
+                  logger.info('login page: login button is pressed');
                   String account = _accountController.text.trim();
                   String password = _passwordController.text.trim();
                   await ref.read(authProvider.notifier).login(account, password, _loginFormKey);
