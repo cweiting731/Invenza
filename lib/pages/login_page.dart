@@ -114,7 +114,23 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               _buildAccountTextFormField(),
               SizedBox(height: 20,),
               _buildPasswordTextFormField(),
-              Row(children: [TextButton(onPressed: () => _showForgotPasswordBottomSheet(context, ref), child: Text('忘記密碼'))],),
+              Row(children: [
+                TextButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus(); // for 收起鍵盤
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.vertical(top: Radius
+                              .circular(16))
+                      ),
+                      builder: (context) => const ForgotPasswordBottomSheet(),
+                    );
+                  },
+                  child: const Text('忘記密碼'),
+                ),
+              ],),
               SizedBox(height: 80),
               ElevatedButton(
                 onPressed: () async {
@@ -191,85 +207,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         }
         return null;
       },
-    );
-  }
-
-  void _showForgotPasswordBottomSheet(BuildContext context, WidgetRef ref) {
-    ref.read(forgotPasswordProvider.notifier).reset();
-    final emailController = TextEditingController();
-    final forgotPasswordFormKey = GlobalKey<FormState>();
-    String? info;
-    Color infoColor = Colors.black87;
-
-    print('showForgotPasswordBottomSheet');
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (context) {
-        return Consumer(builder: (context, ref, _) {
-          final forgotState = ref.watch(forgotPasswordProvider);
-          final api = ref.read(apiClientProvider);
-          if (forgotState.isLoading) {
-            info = '傳送中...';
-            infoColor = Colors.black87;
-          } else if (forgotState.hasError) {
-            info = api.formatErrorMessage(forgotState.error);
-            infoColor = Colors.red;
-          } else if (forgotState.hasValue && forgotState.value != '') {
-            info = forgotState.value;
-            infoColor = Colors.green;
-          }
-          
-          
-          return Form(
-            key: forgotPasswordFormKey,
-            child: Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-                left: 24,
-                right: 24,
-                top: 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(children: [Text('忘記密碼')],),
-                  SizedBox(height: 24,),
-                  TextFormField(
-                    controller: emailController,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      hintText: '請輸入註冊時使用的email',
-                      prefixIcon: Icon(Icons.email_outlined),
-                    ),
-                    validator: (value) {
-                      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-                      if (value == null) return 'email值不能為空';
-                      if (!emailRegex.hasMatch(value)) return 'email格式錯誤';
-                      return null;
-                    },
-                  ),
-                  SizedBox(height: 16,),
-                  ElevatedButton(
-                    onPressed: () async {
-                      final email = emailController.text.trim();
-                      await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
-                    },
-                    child: Text('送出'),
-                  ),
-                  if (info != null) 
-                    Padding(
-                      padding: EdgeInsets.only(top: 16),
-                      child: Text(info!, style: TextStyle(color: infoColor),),
-                    )
-                ],
-              ),
-            )
-          );
-        });
-      }
     );
   }
 }
