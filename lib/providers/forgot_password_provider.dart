@@ -11,12 +11,12 @@ import '../services/log_service.dart';
 import 'api_provider.dart';
 import 'log_provider.dart';
 
-final forgotPasswordProvider = StateNotifierProvider<ForgotPasswordController, AsyncValue<String>>(
-      (ref) {
-        final logger = ref.read(logProvider);
-        final api = ref.read(apiClientProvider);
-        return ForgotPasswordController(logger, api);
-      }
+final forgotPasswordProvider = StateNotifierProvider.autoDispose<ForgotPasswordController, AsyncValue<String>>(
+  (ref) {
+    final logger = ref.read(logProvider);
+    final api = ref.read(apiClientProvider);
+    return ForgotPasswordController(logger, api);
+  }
 );
 
 class ForgotPasswordController extends StateNotifier<AsyncValue<String>> {
