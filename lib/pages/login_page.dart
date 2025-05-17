@@ -50,46 +50,53 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     print('build login page');
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: const Icon(Icons.insert_emoticon_sharp),
-        actions: [
-          PopupMenuButton(
-            key: const ValueKey('login_page_app_bar'),
-            tooltip: '設定',
-            icon: Icon(Icons.settings),
-            padding: const EdgeInsets.all(10.0),
-            itemBuilder: (context) => [
-              PopupMenuItem(value: 'problem', child: Text('問題回報')),
-              PopupMenuItem(value: 'logout', child: Text('登出')),
-            ])
-        ],
-      ),
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                double screenWidth = constraints.maxWidth;
-                double contentWidth = screenWidth > 700
-                    ? 600 // 大螢幕
-                    : screenWidth * 0.85; // 小螢幕
-                double screenHeight = constraints.maxHeight;
-                double contentHeight = screenHeight > 600
-                    ? 500
-                    : screenHeight * 0.85;
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus(); // 👉 主動取消目前的輸入焦點（keyboard收起來）
+      },
+      behavior: HitTestBehavior.opaque,
+      child: Scaffold(
+        appBar: AppBar(
+          leading: const Icon(Icons.insert_emoticon_sharp),
+          actions: [
+            Builder(builder: (context) {
+              return PopupMenuButton<String>(
+                tooltip: '設定',
+                icon: Icon(Icons.settings),
+                itemBuilder: (context) => [
+                  const PopupMenuItem(value: 'problem', child: Text('問題回報')),
+                  const PopupMenuItem(value: 'logout', child: Text('登出')),
+                ],
+              );
+            }),
+          ],
+        ),
+        body: SafeArea(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  double screenWidth = constraints.maxWidth;
+                  double contentWidth = screenWidth > 700
+                      ? 600 // 大螢幕
+                      : screenWidth * 0.85; // 小螢幕
+                  double screenHeight = constraints.maxHeight;
+                  double contentHeight = screenHeight > 600
+                      ? 500
+                      : screenHeight * 0.85;
 
-                return Center(
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      maxWidth: contentWidth,
-                      // maxHeight: contentHeight,
-                    ),
-                    child: _buildLoginForm(),
-                  )
-                );
-              },
+                  return Center(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          maxWidth: contentWidth,
+                          // maxHeight: contentHeight,
+                        ),
+                        child: _buildLoginForm(),
+                      )
+                  );
+                },
+              ),
             ),
           ),
         ),
