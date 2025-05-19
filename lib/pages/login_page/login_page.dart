@@ -12,10 +12,10 @@ import 'package:invenza/services/log_service.dart';
 import 'package:invenza/theme/theme.dart';
 import 'package:invenza/widgets/dialog_utils.dart';
 
-import '../providers/auth_provider.dart';
-import '../providers/forgot_password_provider.dart';
-import '../widgets/forgot_password_bottom_sheet.dart';
-import '../widgets/issue_report.dart';
+import '../../providers/auth_provider.dart';
+import '../../providers/forgot_password_provider.dart';
+import 'forgot_password_bottom_sheet.dart';
+import '../issue_report.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
