@@ -11,7 +11,7 @@ import '../services/log_service.dart';
 import 'api_provider.dart';
 import 'log_provider.dart';
 
-final forgotPasswordProvider = StateNotifierProvider.autoDispose<ForgotPasswordController, AsyncValue<String>>(
+final forgotPasswordProvider = StateNotifierProvider.autoDispose<ForgotPasswordController, AsyncValue<String?>>(
   (ref) {
     final logger = ref.read(logProvider);
     final api = ref.read(apiClientProvider);
@@ -19,11 +19,11 @@ final forgotPasswordProvider = StateNotifierProvider.autoDispose<ForgotPasswordC
   }
 );
 
-class ForgotPasswordController extends StateNotifier<AsyncValue<String>> {
+class ForgotPasswordController extends StateNotifier<AsyncValue<String?>> {
   final LogService _logger;
   final ApiClient _api;
 
-  ForgotPasswordController(this._logger, this._api) : super(const AsyncValue.data(''));
+  ForgotPasswordController(this._logger, this._api) : super(const AsyncValue.data(null));
 
   Future<void> submit(String email, GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
