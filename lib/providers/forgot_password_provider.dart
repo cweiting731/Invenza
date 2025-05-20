@@ -28,7 +28,13 @@ class ForgotPasswordController extends StateNotifier<AsyncValue<String>> {
   Future<void> submit(String email, GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
     state = const AsyncValue.loading();
-    print('submit');
+
+    // test case
+    if (email == 'admin@gmail.com') {
+      state = const AsyncData('test success');
+      return;
+    }
+
     try {
       final data = await _api.post(
         'http://localhost:8080/api/forgot-password',

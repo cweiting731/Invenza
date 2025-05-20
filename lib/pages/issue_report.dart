@@ -26,7 +26,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
   
   @override
   Widget build(BuildContext context) {
-    final issueReportState = ref.watch(issueReportProvider);
+    final issueReportState = ref.watch(issueReportProvider); // 監聽狀態變化
     final api = ref.read(apiClientProvider);
     final logger = ref.read(logProvider);
 

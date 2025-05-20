@@ -34,6 +34,12 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
     state = const AsyncValue.loading(); // 設定狀態為loading
 
+    // test mode
+    if (account == 'admin' && password == 'admin1') {
+      state = AsyncValue.data(Employee('admin', '110001', Association('admin@gmail.com', '0000000000')));
+      return;
+    }
+
     try {
       final data = await _api.post(
         'http://localhost:8080/api/login',
