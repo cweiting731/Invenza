@@ -8,7 +8,6 @@ import 'package:invenza/theme/theme.dart';
 
 void main() {
   final colorScheme = ColorScheme.fromSeed(seedColor: Color(0xFF51B5FF));
-  printColorScheme(colorScheme);
   runApp(
       ProviderScope(
         child: Invenza(),
