@@ -29,18 +29,43 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
 
     String? info;
     Color infoColor = Colors.black87;
+    bool isTransfer = false;
 
-    if (forgotState.isLoading) {
-      info = '傳送中...';
-    } else if (forgotState.hasError) {
-      logger.error('forgot password: ${forgotState.error}');
-      info = api.formatErrorMessage(forgotState.error);
-      infoColor = Colors.red;
-    } else if (forgotState.hasValue && forgotState.value != '') {
-      logger.info('forgot password: email transfer successfully');
-      info = forgotState.value;
-      infoColor = Colors.green;
-    }
+    forgotState.when(
+        data: (message) {
+          setState(() {
+            logger.info('forgot password: email transfer successfully');
+            info = message;
+            infoColor = Colors.green;
+            if(info != null) isTransfer = true;
+          });
+        },
+        error: (e, _) {
+          setState(() {
+            logger.error('forgot password: ${forgotState.error}');
+            info = api.formatErrorMessage(e);
+            infoColor = Colors.red;
+          });
+        },
+        loading: () {
+          setState(() {
+            info = '傳送中...';
+            infoColor = Colors.black87;
+          });
+        }
+    );
+
+    // if (forgotState.isLoading) {
+    //   info = '傳送中...';
+    // } else if (forgotState.hasError) {
+    //   logger.error('forgot password: ${forgotState.error}');
+    //   info = api.formatErrorMessage(forgotState.error);
+    //   infoColor = Colors.red;
+    // } else if (forgotState.hasValue && forgotState.value != '') {
+    //   logger.info('forgot password: email transfer successfully');
+    //   info = forgotState.value;
+    //   infoColor = Colors.green;
+    // }
 
     return Padding(
       padding: EdgeInsets.only(
@@ -71,14 +96,22 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
               },
             ),
             const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () async {
-                logger.info('forgot password: transfer button is pressed');
-                final email = emailController.text.trim();
-                await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
-              },
-              child: const Text('送出'),
-            ),
+            if (!isTransfer)
+              ElevatedButton(
+                onPressed: () async {
+                  logger.info('forgot password: transfer button is pressed');
+                  final email = emailController.text.trim();
+                  await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
+                },
+                child: const Text('送出'),
+              ),
+            if(isTransfer)
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('確認'),
+              ),
             if (info != null)
               Padding(
                 padding: const EdgeInsets.only(top: 16),
