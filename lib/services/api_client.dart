@@ -25,10 +25,11 @@ class ApiClient {
 
       final data = jsonDecode(response.body);
 
+      /* TODO: statusCode 各個判斷 */
       if (response.statusCode == 200) {
         return data;
       } else {
-        throw Exception(data['message'] ?? '伺服器錯誤 (${response.statusCode})');
+        throw Exception(data['error'] ?? '伺服器錯誤 (${response.statusCode})');
       }
     } on SocketException catch (e, st) {
       Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
@@ -37,7 +38,7 @@ class ApiClient {
     } on http.ClientException catch (e, st) {
       Error.throwWithStackTrace(Exception('連線失敗，請確認伺服器是否有開啟'), st);
     } catch (e, st) {
-      Error.throwWithStackTrace(Exception('未知錯誤：$e'), st);
+      rethrow;
     }
   }
 
