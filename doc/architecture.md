@@ -1,7 +1,17 @@
 # 程式架構
 ## 分類
+```
+├── interface
+    ├── contacable
+        └── 給employees、供應商、經銷商使用
+    ├── serializable (給所有需要傳到後端的資料型態
+```
 * interface
     存放容器模型使用的interface
+    * contactable
+        給employees、供應商、經銷商
+    * serializable
+        給所有需要傳到後端子資料型態
 * models
     存放容器模型
 * pages
@@ -41,11 +51,8 @@ condition.data裝載用
 #### client -> server
 ```json
 {
-  "type" : "Login", 
-  "data" : {
-    "account" : "account", 
-    "password" : "password"
-  }
+  "account" : "account", 
+  "password" : "password"
 }
 ```
 #### server -> client (success)
