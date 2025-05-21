@@ -8,9 +8,9 @@ final darkColorScheme = ColorScheme.fromSeed(
 );
 
 final lightColorScheme = ColorScheme.fromSeed(
-  seedColor: Color(0xFF7081FC),
+  seedColor: Color(0xFF5846E4),
   brightness: Brightness.light,
-  primary: Color(0xFF7081FC),
+  primary: Color(0xFF5846E4),
   onPrimary: Color(0xFFFAF8FE),
   primaryContainer: Color(0xFFC2D8FF),
   onPrimaryContainer: Color(0xFF3A3540),
