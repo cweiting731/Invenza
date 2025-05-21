@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-
-import '../models/condition.dart';
+import 'package:invenza/interface/serializable.dart';
 import 'log_service.dart';
 
 class ApiClient {
@@ -12,12 +11,14 @@ class ApiClient {
   ApiClient(this.logger);
 
   // 方法
-  Future<Map<String, dynamic>> post(String url, Condition condition) async {
+  Future<Map<String, dynamic>> post(String url, Serializable transferData, {String token = ''}) async {
     try {
+      print(transferData.serialization());
       final response = await http.post(
         Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
         body: condition.serialization(),
+        body: transferData.serialization(),
       );
 
       final data = jsonDecode(response.body);

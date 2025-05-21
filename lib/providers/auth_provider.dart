@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:invenza/models/association.dart';
-import 'package:invenza/models/auth_data.dart';
-import 'package:invenza/models/condition.dart';
+import 'package:invenza/models/transfer_data/auth_data.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/providers/log_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
@@ -42,11 +42,8 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
     try {
       final data = await _api.post(
-        'http://localhost:8080/api/login',
-        Condition(
-          'Login',
-          AuthData(account, password).serialization_json()
-        )
+        ApiRoute.getRoute('auth'),
+        AuthData(account, password),
       );
       if (data['success'] == true) {
         if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null)) {

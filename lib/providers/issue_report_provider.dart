@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:invenza/models/transfer_data/issue_report_data.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/providers/log_provider.dart';
 import 'package:invenza/services/api_client.dart';
 import 'package:invenza/services/log_service.dart';
-
-import '../models/condition.dart';
 
 final issueReportProvider = StateNotifierProvider.autoDispose<IssueReportController, AsyncValue<String>>(
     (ref) {
@@ -24,14 +24,8 @@ class IssueReportController extends StateNotifier<AsyncValue<String>> {
 
     try {
       final data = await _api.post(
-        'http://localhost:8080/api/issue-report',
-        Condition(
-          'IssueReport',
-          {
-            'issue' : issue,
-            'logs' : _logger.exportAsJson()
-          }
-        )
+        ApiRoute.getRoute('issue-report'),
+        IssueReportData(issue, _logger.exportAsJson()),
       );
 
       if (data['success']) {

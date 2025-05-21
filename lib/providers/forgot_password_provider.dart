@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:invenza/models/condition.dart';
+import 'package:invenza/models/transfer_data/forgot_password_data.dart';
+import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/services/api_client.dart';
 
 import '../services/log_service.dart';
@@ -37,13 +38,8 @@ class ForgotPasswordController extends StateNotifier<AsyncValue<String?>> {
 
     try {
       final data = await _api.post(
-        'http://localhost:8080/api/forgot-password',
-        Condition(
-          'ForgotPassword',
-          {
-            'email' : email,
-          }
-        ),
+        ApiRoute.getRoute('forgot-password'),
+        ForgotPasswordData(email),
       );
 
       if (data['success']) {
