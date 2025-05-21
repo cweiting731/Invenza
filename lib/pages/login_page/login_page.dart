@@ -70,7 +70,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                 icon: Icon(Icons.settings),
                 itemBuilder: (context) => [
                   const PopupMenuItem(value: 'issue', child: Text('問題回報')),
-                  const PopupMenuItem(value: 'logout', child: Text('登出')),
                 ],
                 onSelected: (value) {
                   if (value == 'issue') {
