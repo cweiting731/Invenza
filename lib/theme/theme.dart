@@ -2,14 +2,25 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-final lightColorScheme = ColorScheme.fromSeed(
+final darkColorScheme = ColorScheme.fromSeed(
   seedColor: Color(0xFFE0EFFD), // 主色系
   brightness: Brightness.light,
 );
 
-final darkColorScheme = ColorScheme.fromSeed(
-  seedColor: Color(0xFFE0EFFD),
-  brightness: Brightness.dark,
+final lightColorScheme = ColorScheme.fromSeed(
+  seedColor: Color(0xFF7081FC),
+  brightness: Brightness.light,
+  primary: Color(0xFF7081FC),
+  onPrimary: Color(0xFFFAF8FE),
+  primaryContainer: Color(0xFFC2D8FF),
+  onPrimaryContainer: Color(0xFF3A3540),
+  secondary: Color(0xFFEEF9FF),
+  onSecondary: Color(0xFF3A3540),
+  error: Colors.red.shade600,
+  onError: Colors.white,
+  surface: Color(0xFFFBE7E3),
+  onSurface: Color(0xFF3A3540),
+  outline: Color(0xFF202483),
 );
 
 final customTextTheme = TextTheme(
