@@ -16,8 +16,10 @@ class ApiClient {
       print(transferData.serialization());
       final response = await http.post(
         Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: condition.serialization(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization' : 'Bearer $token',
+        },
         body: transferData.serialization(),
       );
 

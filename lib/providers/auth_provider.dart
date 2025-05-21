@@ -36,7 +36,7 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
     // test mode
     if (account == 'admin' && password == 'admin1') {
-      state = AsyncValue.data(Employee('admin', '110001', Association('admin@gmail.com', '0000000000')));
+      state = AsyncValue.data(Employee('admin', '110001', Association('admin@gmail.com', '0000000000'), '11111'));
       return;
     }
 
@@ -49,7 +49,7 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
         if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null)) {
           throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
         }
-        Employee employee = Employee(data['name'], data['id'], Association(data['email'], data['phone']));
+        Employee employee = Employee(data['name'], data['id'], Association(data['email'], data['phone']), data['jwt']);
         // print(employee.getName());
         // print(employee.getID());
         // print(employee.getAssociation());
