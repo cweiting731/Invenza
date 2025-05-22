@@ -2,8 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-
-import '../models/condition.dart';
+import 'package:invenza/interface/serializable.dart';
 import 'log_service.dart';
 
 class ApiClient {
@@ -12,20 +11,25 @@ class ApiClient {
   ApiClient(this.logger);
 
   // 方法
-  Future<Map<String, dynamic>> post(String url, Condition condition) async {
+  Future<Map<String, dynamic>> post(String url, Serializable transferData, {String token = ''}) async {
     try {
+      print(transferData.serialization());
       final response = await http.post(
         Uri.parse(url),
-        headers: {'Content-Type': 'application/json'},
-        body: condition.serialization(),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization' : 'Bearer $token',
+        },
+        body: transferData.serialization(),
       );
 
       final data = jsonDecode(response.body);
 
+      /* TODO: statusCode 各個判斷 */
       if (response.statusCode == 200) {
         return data;
       } else {
-        throw Exception(data['message'] ?? '伺服器錯誤 (${response.statusCode})');
+        throw Exception(data['error'] ?? '伺服器錯誤 (${response.statusCode})');
       }
     } on SocketException catch (e, st) {
       Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
@@ -34,7 +38,7 @@ class ApiClient {
     } on http.ClientException catch (e, st) {
       Error.throwWithStackTrace(Exception('連線失敗，請確認伺服器是否有開啟'), st);
     } catch (e, st) {
-      Error.throwWithStackTrace(Exception('未知錯誤：$e'), st);
+      rethrow;
     }
   }
 

@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:invenza/models/association.dart';
-import 'package:invenza/models/auth_data.dart';
-import 'package:invenza/models/condition.dart';
+import 'package:invenza/models/transfer_data/auth_data.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/providers/log_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
@@ -34,27 +34,26 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
     state = const AsyncValue.loading(); // 設定狀態為loading
 
+    // test mode
+    if (account == 'admin' && password == 'admin1') {
+      state = AsyncValue.data(Employee('admin', '110001', Association(email: 'admin@gmail.com', phone: '0912345678'), '11111'));
+      return;
+    }
+
     try {
       final data = await _api.post(
-        'http://localhost:8080/api/login',
-        Condition(
-          'Login',
-          AuthData(account, password).serialization_json()
-        )
+        ApiRoute.getRoute('auth'),
+        AuthData(account, password),
       );
-      if (data['success'] == true) {
-        if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null)) {
-          throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
-        }
-        Employee employee = Employee(data['name'], data['id'], Association(data['email'], data['phone']));
-        // print(employee.getName());
-        // print(employee.getID());
-        // print(employee.getAssociation());
-        state = AsyncValue.data(employee); // 表示成功
+
+      if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null) || data['jwt'] == null) {
+        _logger.error('employee data lost');
+        throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
       }
+      Employee employee = Employee(data['name'], data['id'], Association(email: data['email'], phone: data['phone']), data['jwt']);
+      state = AsyncValue.data(employee); // 表示成功
     }
     catch (e, st) {
-      print(e.toString());
       state = AsyncValue.error(e, st);
     }
   }
