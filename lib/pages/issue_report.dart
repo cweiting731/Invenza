@@ -30,7 +30,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
     final api = ref.read(apiClientProvider);
     final logger = ref.read(logProvider);
 
-    String transferOrComfirm = '送出';
+    bool isEnd = false;
 
     String? info;
     Color infoColor = Colors.black87;
@@ -43,9 +43,9 @@ class _IssueReportState extends ConsumerState<IssueReport> {
       infoColor = Colors.red;
     } else if (issueReportState.hasValue && issueReportState.value != '') {
       logger.info('issue report: transfer successfully');
-      transferOrComfirm = '確認';
       info = issueReportState.value;
       infoColor = Colors.green;
+      isEnd = true;
     }
 
     return LayoutBuilder(
@@ -84,7 +84,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
                   ),
                 ),
                 const SizedBox(height: 24,),
-                if (issueReportState.hasValue && issueReportState.value == '')
+                if (!isEnd)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
@@ -104,7 +104,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
                       SizedBox(width: 1,)
                     ],
                   ),
-                if (issueReportState.hasValue && issueReportState.value != '')
+                if (isEnd)
                   ElevatedButton(
                       onPressed: () {
                         logger.info('issue report: confirm');
