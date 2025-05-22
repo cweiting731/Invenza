@@ -139,16 +139,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               Row(children: [
                 TextButton(
                   onPressed: () {
-                    FocusScope.of(context).unfocus(); // for 收起鍵盤
-                    showModalBottomSheet(
-                      context: context,
-                      isScrollControlled: true,
-                      shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(top: Radius
-                              .circular(16))
-                      ),
-                      builder: (context) => const ForgotPasswordBottomSheet(),
-                    );
+                    showForgotPasswordBottomSheet(context);
                   },
                   child: const Text('忘記密碼'),
                 ),

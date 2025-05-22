@@ -4,6 +4,18 @@ import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/forgot_password_provider.dart';
 import 'package:invenza/providers/log_provider.dart';
 
+void showForgotPasswordBottomSheet(final context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius
+            .circular(16))
+    ),
+    builder: (context) => const ForgotPasswordBottomSheet(),
+  );
+}
+
 class ForgotPasswordBottomSheet extends ConsumerStatefulWidget {
   const ForgotPasswordBottomSheet({super.key});
 
