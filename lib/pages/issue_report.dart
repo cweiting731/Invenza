@@ -75,6 +75,8 @@ class _IssueReportState extends ConsumerState<IssueReport> {
                   minLines: 3,
                   maxLines: 6,
                   keyboardType: TextInputType.multiline,
+                  textInputAction: TextInputAction.done,
+                  onSubmitted: (_) => _submit(),
                   decoration: const InputDecoration(
                     labelText: '問題',
                     hintText: '請簡要描述你遇到的問題',
@@ -96,11 +98,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
                       ),
                       SizedBox(width: 1,),
                       ElevatedButton(
-                          onPressed: () async {
-                            logger.info('issue report: transfer');
-                            final issue = _IssueTextController.text.trim();
-                            await ref.read(issueReportProvider.notifier).submit(issue);
-                          },
+                          onPressed: () => _submit(),
                           child: Text('送出')
                       ),
                       SizedBox(width: 1,)
@@ -125,5 +123,11 @@ class _IssueReportState extends ConsumerState<IssueReport> {
         );
       }
     );
+  }
+
+  void _submit() async {
+    ref.read(logProvider).info('issue report: transfer');
+    final issue = _IssueTextController.text.trim();
+    await ref.read(issueReportProvider.notifier).submit(issue);
   }
 }

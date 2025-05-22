@@ -155,12 +155,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
               ],),
               SizedBox(height: 80),
               ElevatedButton(
-                onPressed: () async {
-                  logger.info('login page: login button is pressed');
-                  String account = _accountController.text.trim();
-                  String password = _passwordController.text.trim();
-                  await ref.read(authProvider.notifier).login(account, password, _loginFormKey);
-                },
+                onPressed: _login,
                 child: Text('登入')
               ),
               if (_errorMessage != null)
@@ -187,6 +182,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         labelText: '帳號',
         prefixIcon: Icon(Icons.account_circle),
       ),
+      textInputAction: TextInputAction.done,
+      onFieldSubmitted: (_) => _login(),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return '帳號不能為空';
@@ -218,6 +215,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
           icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
         ),
       ),
+      textInputAction: TextInputAction.done,
+      onFieldSubmitted: (_) => _login(),
       validator: (value) {
         if (value == null || value.isEmpty) {
           return '密碼不能為空';
@@ -231,5 +230,12 @@ class _LoginPageState extends ConsumerState<LoginPage> {
         return null;
       },
     );
+  }
+
+  void _login() async {
+    final String account = _accountController.text.trim();
+    final String password = _passwordController.text.trim();
+    ref.read(logProvider).info('login page: login button is pressed. $account / $password');
+    await ref.read(authProvider.notifier).login(account, password, _loginFormKey);
   }
 }

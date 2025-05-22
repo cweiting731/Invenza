@@ -88,6 +88,8 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
                 hintText: '請輸入註冊時使用的email',
                 prefixIcon: Icon(Icons.email_outlined),
               ),
+              textInputAction: TextInputAction.done,
+              onFieldSubmitted: (_) => _submit(),
               validator: (value) {
                 final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                 if (value == null || value.isEmpty) return 'email不能為空';
@@ -98,11 +100,7 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
             const SizedBox(height: 16),
             if (!isTransfer)
               ElevatedButton(
-                onPressed: () async {
-                  logger.info('forgot password: transfer button is pressed');
-                  final email = emailController.text.trim();
-                  await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
-                },
+                onPressed: () => _submit(),
                 child: const Text('送出'),
               ),
             if(isTransfer)
@@ -121,5 +119,11 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
         ),
       ),
     );
+  }
+
+  void _submit() async {
+    final email = emailController.text.trim();
+    ref.read(logProvider).info('forgot password: transfer button is pressed. $email');
+    await ref.read(forgotPasswordProvider.notifier).submit(email, forgotPasswordFormKey);
   }
 }
