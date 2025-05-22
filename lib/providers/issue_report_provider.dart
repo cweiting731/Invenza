@@ -28,12 +28,7 @@ class IssueReportController extends StateNotifier<AsyncValue<String>> {
         IssueReportData(issue, _logger.exportAsJson()),
       );
 
-      if (data['success']) {
-        state = const AsyncValue.data('問題回報成功，請等待作業人員回覆');
-        print('submit success');
-      } else {
-        throw Exception('問題回報失敗');
-      }
+      state = const AsyncValue.data('問題回報成功，請等待作業人員回覆');
     }
     catch (e, st) {
       state = AsyncValue.error(e, st);

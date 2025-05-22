@@ -42,12 +42,7 @@ class ForgotPasswordController extends StateNotifier<AsyncValue<String?>> {
         ForgotPasswordData(email),
       );
 
-      if (data['success']) {
-        state = const AsyncValue.data('email傳送成功，請查看您的信箱確認');
-        print('submit success');
-      } else {
-        throw Exception('查無email資訊');
-      }
+      state = const AsyncValue.data('email傳送成功，請查看您的信箱確認');
     }
     catch (e, st) {
       state = AsyncValue.error(e, st);

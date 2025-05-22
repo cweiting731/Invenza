@@ -36,7 +36,7 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
     // test mode
     if (account == 'admin' && password == 'admin1') {
-      state = AsyncValue.data(Employee('admin', '110001', Association('admin@gmail.com', '0000000000'), '11111'));
+      state = AsyncValue.data(Employee('admin', '110001', Association(email: 'admin@gmail.com', phone: '0912345678'), '11111'));
       return;
     }
 
@@ -45,21 +45,15 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
         ApiRoute.getRoute('auth'),
         AuthData(account, password),
       );
-      if (data['success'] == true) {
-        if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null)) {
-          throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
-        }
-        Employee employee = Employee(data['name'], data['id'], Association(data['email'], data['phone']), data['jwt']);
-        // print(employee.getName());
-        // print(employee.getID());
-        // print(employee.getAssociation());
-        state = AsyncValue.data(employee); // 表示成功
-      } else {
-        throw Exception(data['message']);
+
+      if (data['name'] == null || data['id'] == null || (data['email'] == null && data['phone'] == null) || data['jwt'] == null) {
+        _logger.error('employee data lost');
+        throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
       }
+      Employee employee = Employee(data['name'], data['id'], Association(email: data['email'], phone: data['phone']), data['jwt']);
+      state = AsyncValue.data(employee); // 表示成功
     }
     catch (e, st) {
-      print(e.toString());
       state = AsyncValue.error(e, st);
     }
   }
