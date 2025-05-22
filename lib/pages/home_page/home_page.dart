@@ -2,7 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/employee.dart';
-import '../providers/auth_provider.dart';
+import 'package:invenza/pages/home_page/procurement_page.dart';
+import '../../providers/auth_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -24,7 +25,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
         title: '進貨列表',
         idle_icon: Icons.input,
         selected_icon: Icons.input_sharp,
-        page: Center(child: Text('這是進貨列表'),)
+        page: ProcurementPage()
     ),
     TabItem(
         title: '庫存',
