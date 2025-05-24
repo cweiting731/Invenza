@@ -174,3 +174,47 @@
     "error" : "error message",
 }
 ```
+
+### ==GET== /api/procurement/get-data
+```json=
+
+```
+
+### response (200)
+```json=
+{
+    "data" : [
+        {
+            "id" : 1, 
+            "commodity" : {
+                "name" : "commodityName"
+                "type" : "commodityType"
+                "transactionValue" : {
+                    "unitPrice" : 1.5, 
+                    "quantity" : 100.0, 
+                    "totalCost" : 150.0, 
+                },
+            },
+            "supplier" : {
+                "name" : "supplierName"
+                "id" : "supplierId"
+                "association" : {
+                    "email" : "supplier email",
+                    "phone" : "supplier phone"
+                }
+            },
+            "orderTimeStamp" :  "DateTime", 
+            "deadlineTimeStamp" : "DateTime", 
+            "responsible" : {
+                "name" : "Employee name", 
+                "id" : "Employee id", 
+                "association" : {
+                    "email" : "Employee email",
+                    "phone" : "Employee phone"
+                }
+            }
+        },
+        ... 
+    ]
+}
+```
