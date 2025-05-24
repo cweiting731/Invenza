@@ -42,6 +42,36 @@ class ApiClient {
     }
   }
 
+  Future<Map<String, dynamic>> get(String url, {Map<String, String>? queryParams, String token = ''}) async {
+    try {
+      final uri = Uri.parse(url).replace(queryParameters: queryParams);
+
+      final response = await http.get(
+        uri,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      final data = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return data;
+      } else {
+        throw Exception(data['error'] ?? '伺服器錯誤 (${response.statusCode})');
+      }
+    } on SocketException catch (e, st) {
+      Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
+    } on FormatException catch (e, st) {
+      Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
+    } on http.ClientException catch (e, st) {
+      Error.throwWithStackTrace(Exception('連線失敗，請確認伺服器是否有開啟'), st);
+    } catch (e, st) {
+      rethrow;
+    }
+  }
+
   String formatErrorMessage(Object? error) {
     if (error is Exception) {
       return error.toString().replaceFirst('Exception: ', '');
