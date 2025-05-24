@@ -63,29 +63,31 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
       },
     );
 
+
+
   }
 }
 
 final fakeData = [
-  ImportOrder('admin',
+  ImportOrder(responsible: Employee('admin', "F00001", Association(email: "admin@gmail.com", phone: "0912345678"), jwtToken: 'admin'),
     id: 0001,
     commodity: Commodity('apple', 'fruit', TransactionValue(unitPrice: 1, quantity: 10, totalCost: 10)),
     supplier: BusinessPartner('成大', '0001', Association(),),
-    orderTimeStamp: '2025/5/22',
-    deadlineTimeStamp: '2025/6/21',
+    orderTimeStamp: DateTime(2025, 5, 22),
+    deadlineTimeStamp: DateTime(2025, 6, 21),
   ),
-  ImportOrder('willy',
+  ImportOrder(responsible: Employee('procurement officer1', "400001", Association(email: "procurement1@gmail.com", phone: "0912345678"), jwtToken: 'procurement1'),
     id: 0002,
     commodity: Commodity('banana', 'fruit', TransactionValue(unitPrice: 2, quantity: 50, totalCost: 100)),
     supplier: BusinessPartner('成大', '0001', Association(),),
-    orderTimeStamp: '2025/5/21',
-    deadlineTimeStamp: '2025/6/22',
+    orderTimeStamp: DateTime(2025, 5, 21),
+    deadlineTimeStamp: DateTime(2025, 6, 22),
   ),
-  ImportOrder('cacucu',
+  ImportOrder(responsible: Employee('procurement officer2', "400002", Association(email: "procurement2@gmail.com", phone: "0912345678"), jwtToken: 'procurement2'),
     id: 0003,
     commodity: Commodity('potato', 'plant', TransactionValue(unitPrice: 0.5, quantity: 100, totalCost: 50)),
     supplier: BusinessPartner('成大', '0001', Association(),),
-    orderTimeStamp: '2025/4/21',
-    deadlineTimeStamp: '2025/6/21',
+    orderTimeStamp: DateTime(2025, 4, 21),
+    deadlineTimeStamp: DateTime(2025, 6, 21),
   ),
 ];
