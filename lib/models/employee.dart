@@ -5,18 +5,15 @@ class Employee implements Contactable {
   final String name;
   final String id;
   final Association association;
-  final String jwtToken;
+  final String? jwtToken;
 
-  Employee(this.name, this.id, this.association, this.jwtToken);
+  Employee(this.name, this.id, this.association, {this.jwtToken});
 
   String getName() {
     return name;
   }
   String getID() {
     return id;
-  }
-  String getToken() {
-    return jwtToken;
   }
   String getAssociation() {
     return '''

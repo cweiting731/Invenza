@@ -14,6 +14,13 @@ import 'package:invenza/services/api_client.dart';
 
 import '../services/log_service.dart';
 
+final userProvider = Provider<Employee?>( (ref) {
+  return ref.read(authProvider).maybeWhen(
+    data: (e) => e,
+    orElse: () => null,
+  );
+});
+
 final authProvider = StateNotifierProvider<AuthController, AsyncValue<Employee?>>(
   (ref) {
     final logger = ref.read(logProvider);
@@ -36,7 +43,7 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
 
     // test mode
     if (account == 'admin' && password == 'admin1') {
-      state = AsyncValue.data(Employee('admin', '110001', Association(email: 'admin@gmail.com', phone: '0912345678'), '11111'));
+      state = AsyncValue.data(Employee('admin', '110001', Association(email: 'admin@gmail.com', phone: '0912345678'), jwtToken: '11111'));
       return;
     }
 
@@ -50,7 +57,7 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
         _logger.error('employee data lost');
         throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
       }
-      Employee employee = Employee(data['name'], data['id'], Association(email: data['email'], phone: data['phone']), data['jwt']);
+      Employee employee = Employee(data['name'], data['id'], Association(email: data['email'], phone: data['phone']), jwtToken: data['jwt']);
       state = AsyncValue.data(employee); // 表示成功
     }
     catch (e, st) {

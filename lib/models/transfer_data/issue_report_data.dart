@@ -17,4 +17,9 @@ class IssueReportData implements Serializable {
       }
     );
   }
+
+  @override
+  void deserialization() {
+    // TODO: implement deserialization
+  }
 }

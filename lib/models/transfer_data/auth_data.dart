@@ -17,4 +17,9 @@ class AuthData implements Serializable{
     );
   }
 
+  @override
+  void deserialization() {
+    // TODO: implement deserialization
+  }
+
 }
