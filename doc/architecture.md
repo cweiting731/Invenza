@@ -109,14 +109,14 @@
 
 ### ==POST== /api/auth/login
 #### request
-```json=
+```json
 {
     "account" : "user_account", 
-    "password" : "user_password",
+    "password" : "user_password"
 }
 ```
 #### response (200)
-```json=
+```json
 {
     "name" : "user_name", 
     "id" : "user_id", 
@@ -126,22 +126,22 @@
 }
 ```
 #### response (401)
-```json=
+```json
 {
-    "error" : "reason",
+  "error": "reason"
 }
 ```
 
 ### ==POST== /api/auth/forgot-password
 #### request
-```json=
+```json
 {
-    "email" : "user_email",
-},
+    "email" : "user_email"
+}
 ```
 
 #### response (200/401)
-```json=
+```json
 {
     "error" : "error message"
 }
@@ -149,72 +149,111 @@
 
 ### /api/issue-report
 #### request
-```json=
+```json
 {
     "issue" : "user_issue", 
     "logs" : [
         {
             "level" : "log_level", 
             "timestamp" : "log_timestamp", 
-            "message" : "log_message",
+            "message" : "log_message"
         },
         {
             "level" : "log_level", 
             "timestamp" : "log_timestamp", 
-            "message" : "log_message",
-        },
-        ...
-    ],
+            "message" : "log_message"
+        }
+        
+    ]
 }
 ```
 
 #### response (200/400)
-```json=
+```json
 {
-    "error" : "error message",
+    "error" : "error message"
 }
 ```
 
 ### ==GET== /api/procurement/get-data
-```json=
+```json
 
 ```
 
 ### response (200)
-```json=
+```json
 {
-    "data" : [
-        {
-            "id" : 1, 
-            "commodity" : {
-                "name" : "commodityName"
-                "type" : "commodityType"
-                "transactionValue" : {
-                    "unitPrice" : 1.5, 
-                    "quantity" : 100.0, 
-                    "totalCost" : 150.0, 
-                },
-            },
-            "supplier" : {
-                "name" : "supplierName"
-                "id" : "supplierId"
-                "association" : {
-                    "email" : "supplier email",
-                    "phone" : "supplier phone"
-                }
-            },
-            "orderTimeStamp" :  "DateTime", 
-            "deadlineTimeStamp" : "DateTime", 
-            "responsible" : {
-                "name" : "Employee name", 
-                "id" : "Employee id", 
-                "association" : {
-                    "email" : "Employee email",
-                    "phone" : "Employee phone"
-                }
-            }
-        },
-        ... 
-    ]
+  "data" : [
+    {
+      "id" : 1, 
+      "commodity" : {
+        "name" : "commodityName",
+        "type" : "commodityType",
+        "transactionValue" : {
+          "unitPrice" : 1.5, 
+          "quantity" : 100.0, 
+          "totalCost" : 150.0
+        }
+      },
+      "supplier" : {
+        "name" : "supplierName",
+        "id" : "supplierId",
+        "association" : {
+          "email" : "supplier email",
+          "phone" : "supplier phone"
+        }
+      },
+      "orderTimeStamp" :  "DateTime", 
+      "deadlineTimeStamp" : "DateTime", 
+      "responsible" : {
+        "name" : "Employee name", 
+        "id" : "Employee id", 
+        "association" : {
+          "email" : "Employee email",
+          "phone" : "Employee phone"
+        }
+      }
+    }
+    
+  ]
+}
+```
+#### response (404)
+```json
+{
+  "error" : "error message"
+}
+```
+
+### ==GET== /api/inventory/get-data
+#### request
+```json
+{
+    
+}
+```
+#### response (200)
+futureStockQuantity = stockQuantity + expectedImportQuantity - expectedExportQuantity
+```json
+{
+  "data" : [
+    {
+      "commodity" : {
+        "name" : "commodity name",
+        "type" : "commodity type"
+      },
+      "stockQuantity" : "stockQuantity (double)",
+      "expectedImportQuantity" : "expectedImportQuantity (double)", 
+      "expectedExportQuantity" : "expectedExportQuantity (double)", 
+      "futureStockQuantity" : "futureStockQuantity (double)"
+    }
+  ]
+}
+```
+
+#### response (404) 
+```json
+{
+  "error" : "error message"
 }
 ```
