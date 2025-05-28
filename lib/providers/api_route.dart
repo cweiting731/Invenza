@@ -7,7 +7,8 @@ class ApiRoute {
     'forgot-password' : '/api/auth/forgot-password',
     'issue-report' : '/api/issue-report',
 
-    'procurement-get-data' : '/api/procurement/get-data'
+    'procurement-get-data' : '/api/procurement/get-data',
+    'inventory-get-data' : '/api/inventory/get-data'
   };
 
   static String getRoute(String type) => '$_serverAddress${_apiRoute[type]}';
