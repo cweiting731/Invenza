@@ -18,32 +18,32 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
   final List<TabItem> tabItems = [
     TabItem(
       title: '首頁',
-      idle_icon: Icons.dashboard_outlined,
-      selected_icon: Icons.dashboard,
+      idleIcon: Icons.dashboard_outlined,
+      selectedIcon: Icons.dashboard,
       page: Center(child: Text('這是首頁'),)
     ),
     TabItem(
         title: '進貨列表',
-        idle_icon: Icons.input,
-        selected_icon: Icons.input_sharp,
+        idleIcon: Icons.input,
+        selectedIcon: Icons.input_sharp,
         page: ProcurementPage()
     ),
     TabItem(
         title: '庫存',
-        idle_icon: Icons.inventory_2_outlined,
-        selected_icon: Icons.inventory_2,
+        idleIcon: Icons.inventory_2_outlined,
+        selectedIcon: Icons.inventory_2,
         page: InventoryPage()
     ),
     TabItem(
         title: '出貨列表',
-        idle_icon: Icons.output,
-        selected_icon: Icons.output_sharp,
+        idleIcon: Icons.output,
+        selectedIcon: Icons.output_sharp,
         page: Center(child: Text('這是出貨列表'),)
     ),
     TabItem(
         title: '行事曆',
-        idle_icon: Icons.calendar_today_outlined,
-        selected_icon: Icons.calendar_month,
+        idleIcon: Icons.calendar_today_outlined,
+        selectedIcon: Icons.calendar_month,
         page: Center(child: Text('這是行事曆'),)
     ),
   ];
@@ -86,7 +86,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
               return Tab(
                 text: item.title,
                 icon: Icon(
-                  isSelected ? item.selected_icon : item.idle_icon,
+                  isSelected ? item.selectedIcon : item.idleIcon,
                   color: isSelected ? Colors.green : Colors.red,
                 ),
               );
@@ -104,9 +104,9 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
 
 class TabItem {
   final String title;
-  final IconData idle_icon;
-  final IconData selected_icon;
+  final IconData idleIcon;
+  final IconData selectedIcon;
   final Widget page;
 
-  TabItem({required this.title, required this.idle_icon, required this.selected_icon,required this.page});
+  TabItem({required this.title, required this.idleIcon, required this.selectedIcon,required this.page});
 }

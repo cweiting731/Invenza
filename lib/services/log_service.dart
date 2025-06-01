@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class LogService {
   // 靜態私有實例（全域唯一）
   static final LogService _instance = LogService._internal();

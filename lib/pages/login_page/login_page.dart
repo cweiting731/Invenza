@@ -1,19 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:invenza/models/association.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/log_provider.dart';
-import 'package:invenza/services/api_client.dart';
-import 'package:invenza/services/log_service.dart';
-import 'package:invenza/theme/theme.dart';
 import 'package:invenza/widgets/dialog_utils.dart';
 
 import '../../providers/auth_provider.dart';
-import '../../providers/forgot_password_provider.dart';
 import 'forgot_password_bottom_sheet.dart';
 import '../issue_report.dart';
 
@@ -97,10 +89,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   double contentWidth = screenWidth > 700
                       ? 600 // 大螢幕
                       : screenWidth * 0.85; // 小螢幕
-                  double screenHeight = constraints.maxHeight;
-                  double contentHeight = screenHeight > 600
-                      ? 500
-                      : screenHeight * 0.85;
 
                   return Center(
                       child: ConstrainedBox(
@@ -121,7 +109,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Widget _buildLoginForm(logger) {
-    print('build login form');
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
       elevation: 4,
@@ -165,7 +152,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Widget _buildAccountTextFormField() {
-    print('build account input');
     return TextFormField(
       controller: _accountController,
       maxLength: 20,
@@ -188,7 +174,6 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   }
 
   Widget _buildPasswordTextFormField() {
-    print('build password input');
     return TextFormField(
       controller: _passwordController,
       obscureText: _obscurePassword,

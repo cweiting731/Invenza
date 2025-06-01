@@ -39,7 +39,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
               child: ExpansionTile(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                title: Text('${order.commodity.name ?? '查無商品名稱'} / ${order.commodity.type ?? '查無商品型號'}'),
+                title: Text('${order.commodity.name} / ${order.commodity.type}'),
                 subtitle: Text('庫存數量: ${order.stockQuantity}'),
                 children: [
                   Padding(

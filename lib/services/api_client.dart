@@ -13,7 +13,6 @@ class ApiClient {
   // 方法
   Future<Map<String, dynamic>> post(String url, Serializable transferData, {String token = ''}) async {
     try {
-      print(transferData.serialization());
       final response = await http.post(
         Uri.parse(url),
         headers: {

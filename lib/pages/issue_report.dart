@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/providers/issue_report_provider.dart';
@@ -15,8 +14,8 @@ class IssueReport extends ConsumerStatefulWidget {
 }
 
 class _IssueReportState extends ConsumerState<IssueReport> {
-  final _IssueTextController = TextEditingController();
-  String? info = null;
+  final _issueTextController = TextEditingController();
+  String? info;
   Color infoColor = Colors.black87;
 
   @override
@@ -54,10 +53,6 @@ class _IssueReportState extends ConsumerState<IssueReport> {
         double contentWidth = screenWidth > 900
             ? 800 // 大螢幕
             : screenWidth * 0.85; // 小螢幕
-        double screenHeight = constraints.maxHeight;
-        double contentHeight = screenHeight > 600
-            ? 500
-            : screenHeight * 0.85;
 
         return ConstrainedBox(
           constraints: BoxConstraints(
@@ -71,7 +66,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
                 const Row(children: [Text('問題回報')],),
                 const SizedBox(height: 24,),
                 TextField(
-                  controller: _IssueTextController,
+                  controller: _issueTextController,
                   minLines: 3,
                   maxLines: 6,
                   keyboardType: TextInputType.multiline,
@@ -115,7 +110,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
                 if (info != null)
                   Padding(
                     padding: const EdgeInsets.only(top: 16),
-                    child: Text(info!, style: TextStyle(color: infoColor)),
+                    child: Text(info, style: TextStyle(color: infoColor)),
                   )
               ],
             ),
@@ -127,7 +122,7 @@ class _IssueReportState extends ConsumerState<IssueReport> {
 
   void _submit() async {
     ref.read(logProvider).info('issue report: transfer');
-    final issue = _IssueTextController.text.trim();
+    final issue = _issueTextController.text.trim();
     await ref.read(issueReportProvider.notifier).submit(issue);
   }
 }

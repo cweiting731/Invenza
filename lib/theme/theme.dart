@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 
 final darkColorScheme = ColorScheme.fromSeed(
@@ -57,18 +55,3 @@ final customTheme = ThemeData(
     ),
   ),
 );
-
-void printColorScheme(ColorScheme scheme) {
-  print('🎨 Seed generated color scheme:');
-  print('primary: ${colorToHex(scheme.primary)}');
-  print('onPrimary: ${colorToHex(scheme.onPrimary)}');
-  print('secondary: ${colorToHex(scheme.secondary)}');
-  print('onSecondary: ${colorToHex(scheme.onSecondary)}');
-  print('surface: ${colorToHex(scheme.surface)}');
-  print('background: ${colorToHex(scheme.background)}');
-  print('error: ${colorToHex(scheme.error)}');
-}
-
-String colorToHex(Color color) {
-  return '#${color.value.toRadixString(16).padLeft(8, '0').toUpperCase()}';
-}

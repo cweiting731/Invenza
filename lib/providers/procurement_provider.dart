@@ -40,7 +40,6 @@ class ProcurementRepository {
       final List rawData = data['data'];
       return rawData.map( (order) => ImportOrder.fromJson(order)).toList();
     } catch (e, st) {
-      print(e);
       rethrow;
     }
   }
