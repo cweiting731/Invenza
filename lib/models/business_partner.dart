@@ -12,4 +12,10 @@ class BusinessPartner implements Contactable{
 
   BusinessPartner(this.name, this.id, this.association);
 
+  Map<String, dynamic> toJson() => {
+    "name" : name,
+    "id" : id,
+    "association" : association.toJson()
+  };
+
 }

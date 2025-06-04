@@ -15,9 +15,4 @@ class ForgotPasswordData implements Serializable {
       }
     );
   }
-
-  @override
-  void deserialization() {
-    // TODO: implement deserialization
-  }
 }

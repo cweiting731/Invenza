@@ -1,10 +1,14 @@
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
+import 'package:invenza/interface/serializable.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/business_partner.dart';
 import 'package:invenza/models/commodity.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/models/transaction_value.dart';
 
-class ImportOrder {
+class ImportOrder implements Serializable{
   // 進貨單ID(系統自動給)、商品名稱、型號、供應商名稱、供應商編號、供應商聯絡方式、進貨單價、進貨數量、進貨總價、訂單日期、進貨日期、填單負責人(根據login資料自動填入)
   int? id;
   Commodity? commodity;
@@ -19,7 +23,8 @@ class ImportOrder {
     final commodity = json['commodity'];
     final supplier = json['supplier'];
     final responsible = json['responsible'];
-    return ImportOrder(
+    final format = DateFormat('yyyy-MM-dd HH:m');
+    final order = ImportOrder(
       id: json['id'],
       commodity: Commodity(
           commodity['name'],
@@ -38,8 +43,8 @@ class ImportOrder {
             phone: supplier['association']['phone']
           )
       ),
-      orderTimeStamp: DateTime.parse(json['orderTimeStamp']),
-      deadlineTimeStamp: DateTime.parse(json['deadlineTimeStamp']),
+      orderTimeStamp: format.parseStrict(json['orderTimeStamp']), /* TODO: 需要處理 ParseStrict出錯的問題 */
+      deadlineTimeStamp: format.parseStrict(json['deadlineTimeStamp']),
       responsible: Employee(
           responsible['name'],
           responsible['id'],
@@ -49,5 +54,20 @@ class ImportOrder {
           )
       )
     );
+    print(order.serialization());
+    return order;
+  }
+
+  @override
+  String serialization() {
+    final formatter = DateFormat("yyyy-MM-dd HH:mm"); // ISO 8601 精確到分鐘
+    return jsonEncode({
+      "id" : id,
+      "commodity" : commodity?.toJson(),
+      "supplier" : supplier?.toJson(),
+      "orderTimeStamp" : orderTimeStamp != null ? formatter.format(orderTimeStamp!) : null,
+      "deadlineTimeStamp" : deadlineTimeStamp != null ? formatter.format(deadlineTimeStamp!) : null,
+      "responsible" : responsible?.toJson(),
+    });
   }
 }

@@ -9,10 +9,13 @@ import 'package:invenza/models/transaction_value.dart';
 import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/providers/api_provider.dart';
 
+import '../../providers/auth_provider.dart';
 import '../../providers/procurement_provider.dart';
+import 'edit_procurement_dialog.dart';
 
 class ProcurementPage extends ConsumerStatefulWidget {
   const ProcurementPage({super.key});
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ProcurementPageState();
 }
@@ -30,55 +33,126 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
   Widget build(BuildContext context) {
     final asyncOrders = ref.watch(importOrdersProvider(_filters));
     final api = ref.read(apiClientProvider);
-    return asyncOrders.when(
-      loading: () => Center(child: CircularProgressIndicator(),),
-      error: (err, _) => Center(child: Text(api.formatErrorMessage(err)),),
-      data: (orders) {
-        return ListView.builder(
-          itemCount: orders.length,
-          itemBuilder: (context, index) {
-            final order = orders[index];
-            return Card(
-              surfaceTintColor: Colors.transparent,
-              shadowColor: Colors.black12,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              child: ExpansionTile(
+    final user = ref.read(userProvider);
+
+    // return ListView.builder(
+    //         itemCount: fakeData.length,
+    //         itemBuilder: (context, index) {
+    //           final order = fakeData[index];
+    //
+    //           return Card(
+    //             surfaceTintColor: Colors.transparent,
+    //             shadowColor: Colors.black12,
+    //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    //             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    //             child: ExpansionTile(
+    //               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    //               collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    //               title: Text('${order.id ?? '?'}'),
+    //               subtitle: Text('${order.commodity?.name ?? '查無商品名稱'} / ${order.commodity?.type ?? '查無商品型號'}'),
+    //               children: [
+    //                 Padding(
+    //                   padding: const EdgeInsets.all(12),
+    //                   child: Column(
+    //                     crossAxisAlignment: CrossAxisAlignment.stretch,
+    //                     mainAxisSize: MainAxisSize.max,
+    //                     children: [
+    //                       Text('單價: ${order.commodity?.transactionValue?.unitPrice ?? '查無商品單價'}'),
+    //                       Text('數量: ${order.commodity?.transactionValue?.quantity ?? '查無商品數量'}'),
+    //                       Text('總價: ${order.commodity?.transactionValue?.totalCost ?? '查無商品總價'}'),
+    //                       SizedBox(height: 4,),
+    //                       Text('供應商: ${order.supplier?.name ?? '查無供應商名稱'}'),
+    //                       Text('供應商email: ${order.supplier?.association.email ?? '查無供應商email'}'),
+    //                       Text('供應商電話: ${order.supplier?.association.phone ?? '查無供應商電話'}'),
+    //                       SizedBox(height: 4,),
+    //                       Text('下單日期: ${order.orderTimeStamp ?? '查無下單日期'}'),
+    //                       Text('截止日期: ${order.deadlineTimeStamp ?? '查無截止日期'}'),
+    //                       Text('負責人: ${order.responsible?.name ?? '查無負責人'}'),
+    //                     ],
+    //                   ),
+    //                 )
+    //               ],
+    //             ),
+    //           );
+    //         },
+    //       );
+
+    return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _openAddProcurementDialog(user),
+        child: const Icon(Icons.add),
+        tooltip: '新增進貨單',
+      ),
+      body: asyncOrders.when(
+        loading: () => Center(child: CircularProgressIndicator(),),
+        error: (err, _) => Center(child: Text(api.formatErrorMessage(err)),),
+        data: (orders) {
+          return ListView.builder(
+            itemCount: orders.length,
+            itemBuilder: (context, index) {
+              final order = orders[index];
+              print(order.commodity);
+              print(order.supplier);
+              print(order.responsible);
+              print(order.id);
+              print(order.orderTimeStamp);
+              print(order.deadlineTimeStamp);
+              print('-------------');
+
+              return Card(
+                surfaceTintColor: Colors.transparent,
+                shadowColor: Colors.black12,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                title: Text('${order.id ?? '?'}'),
-                subtitle: Text('${order.commodity?.name ?? '查無商品名稱'} / ${order.commodity?.type ?? '查無商品型號'}'),
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Text('單價: ${order.commodity?.transactionValue?.unitPrice ?? '查無商品單價'}'),
-                        Text('數量: ${order.commodity?.transactionValue?.quantity ?? '查無商品數量'}'),
-                        Text('總價: ${order.commodity?.transactionValue?.totalCost ?? '查無商品總價'}'),
-                        SizedBox(height: 4,),
-                        Text('供應商: ${order.supplier?.name ?? '查無供應商名稱'}'),
-                        Text('供應商email: ${order.supplier?.association.email ?? '查無供應商email'}'),
-                        Text('供應商電話: ${order.supplier?.association.phone ?? '查無供應商電話'}'),
-                        SizedBox(height: 4,),
-                        Text('下單日期: ${order.orderTimeStamp ?? '查無下單日期'}'),
-                        Text('截止日期: ${order.deadlineTimeStamp ?? '查無截止日期'}'),
-                        Text('負責人: ${order.responsible ?? '查無負責人'}'),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            );
-          },
-        );
-      },
+                margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: ExpansionTile(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  title: Text('${order.id ?? '?'}'),
+                  subtitle: Text('${order.commodity?.name ?? '查無商品名稱'} / ${order.commodity?.type ?? '查無商品型號'}'),
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Text('單價: ${order.commodity?.transactionValue?.unitPrice ?? '查無商品單價'}'),
+                          Text('數量: ${order.commodity?.transactionValue?.quantity ?? '查無商品數量'}'),
+                          Text('總價: ${order.commodity?.transactionValue?.totalCost ?? '查無商品總價'}'),
+                          SizedBox(height: 4,),
+                          Text('供應商: ${order.supplier?.name ?? '查無供應商名稱'}'),
+                          Text('供應商email: ${order.supplier?.association.email ?? '查無供應商email'}'),
+                          Text('供應商電話: ${order.supplier?.association.phone ?? '查無供應商電話'}'),
+                          SizedBox(height: 4,),
+                          Text('下單日期: ${order.orderTimeStamp ?? '查無下單日期'}'),
+                          Text('截止日期: ${order.deadlineTimeStamp ?? '查無截止日期'}'),
+                          Text('負責人: ${order.responsible?.name ?? '查無負責人'}'),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _openAddProcurementDialog(Employee? user) async {
+    final result = await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => EditProcurementDialog(importOrder: ImportOrder(responsible: user)),
     );
 
-
-
+    // 如果返回值是 true，表示需要刷新資料
+    if (result == true) {
+      setState(() {
+        _filters = FilterOptions();  // 這樣會觸發重新加載資料
+      });
+    }
   }
 }
 
@@ -95,7 +169,7 @@ final fakeData = [
     commodity: Commodity('banana', 'fruit', TransactionValue(unitPrice: 2, quantity: 50, totalCost: 100)),
     supplier: BusinessPartner('成大', '0001', Association(),),
     orderTimeStamp: DateTime(2025, 5, 21),
-    deadlineTimeStamp: DateTime(2025, 6, 22),
+    // deadlineTimeStamp: DateTime(2025, 6, 22),
   ),
   ImportOrder(responsible: Employee('procurement officer2', "400002", Association(email: "procurement2@gmail.com", phone: "0912345678"), jwtToken: 'procurement2'),
     id: 0003,

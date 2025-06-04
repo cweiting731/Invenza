@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/employee.dart';
+import 'package:invenza/pages/home_page/edit_procurement_dialog.dart';
 import 'package:invenza/pages/home_page/inventory_page.dart';
 import 'package:invenza/pages/home_page/procurement_page.dart';
 import '../../providers/auth_provider.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
         title: '進貨列表',
         idleIcon: Icons.input,
         selectedIcon: Icons.input_sharp,
-        page: ProcurementPage()
+        page: ProcurementPage(),
     ),
     TabItem(
         title: '庫存',
@@ -54,8 +55,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
     _tabController = TabController(length: tabItems.length, vsync: this);
 
     _tabController.addListener(() {
-      // if (_tabController.indexIsChanging) return; // 等到動畫完成
-      setState(() {}); // 觸發 rebuild，讓 title 跟著變
+      setState(() {});
     });
   }
 
@@ -98,6 +98,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
         controller: _tabController,
         children: tabItems.map((item) => item.page).toList()
       ),
+      floatingActionButton: tabItems[_tabController.index].floatingAction?.call(context),
     );
   }
 }
@@ -107,6 +108,7 @@ class TabItem {
   final IconData idleIcon;
   final IconData selectedIcon;
   final Widget page;
+  final Widget Function(BuildContext)? floatingAction;
 
-  TabItem({required this.title, required this.idleIcon, required this.selectedIcon,required this.page});
+  TabItem({required this.title, required this.idleIcon, required this.selectedIcon,required this.page, this.floatingAction});
 }

@@ -8,6 +8,7 @@ class ApiRoute {
     'issue-report' : '/api/issue-report',
 
     'procurement-get-data' : '/api/procurement/get-data',
+    'procurement-add-data' : '/api/procurement/add-data',
     'inventory-get-data' : '/api/inventory/get-data'
   };
 

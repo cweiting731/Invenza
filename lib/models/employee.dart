@@ -12,16 +12,9 @@ class Employee implements Contactable {
 
   Employee(this.name, this.id, this.association, {this.jwtToken});
 
-  String getName() {
-    return name;
-  }
-  String getID() {
-    return id;
-  }
-  String getAssociation() {
-    return '''
-        phone: ${association.phone ?? ''} 
-        email: ${association.email ?? ''}
-      ''';
-  }
+  Map<String, dynamic> toJson() => {
+    "name" : name,
+    "id" : id,
+    "association" : association.toJson(),
+  };
 }

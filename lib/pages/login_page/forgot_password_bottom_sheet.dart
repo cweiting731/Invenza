@@ -35,7 +35,6 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
 
   @override
   Widget build(BuildContext context) {
-    final forgotState = ref.watch(forgotPasswordProvider);
     final api = ref.read(apiClientProvider);
     final logger = ref.read(logProvider);
 
@@ -43,29 +42,31 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
     Color infoColor = Colors.black87;
     bool isTransfer = false;
 
-    forgotState.when(
-        data: (message) {
-          setState(() {
-            logger.info('forgot password: email transfer successfully');
-            info = message;
-            infoColor = Colors.green;
-            if(info != null) isTransfer = true;
-          });
-        },
-        error: (e, _) {
-          setState(() {
-            logger.error('forgot password: ${forgotState.error}');
-            info = api.formatErrorMessage(e);
-            infoColor = Colors.red;
-          });
-        },
-        loading: () {
-          setState(() {
-            info = '傳送中...';
-            infoColor = Colors.black87;
-          });
-        }
-    );
+    ref.listen<AsyncValue<String?>>(forgotPasswordProvider, (previous, next) {
+      next.when(
+          data: (message) {
+            ref.read(logProvider).info('forgot password: email transfer successfully');
+            setState(() {
+              info = message;
+              infoColor = Colors.green;
+              isTransfer = true;
+            });
+          },
+          error: (e, _) {
+            ref.read(logProvider).error('forgot password: $e');
+            setState(() {
+              info = api.formatErrorMessage(e);
+              infoColor = Colors.red;
+            });
+          },
+          loading: () {
+            setState(() {
+              info = '傳送中...';
+              infoColor = Colors.black87;
+            });
+          }
+      );
+    });
 
     // if (forgotState.isLoading) {
     //   info = '傳送中...';
