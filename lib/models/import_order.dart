@@ -23,7 +23,21 @@ class ImportOrder implements Serializable{
     final commodity = json['commodity'];
     final supplier = json['supplier'];
     final responsible = json['responsible'];
-    final format = DateFormat('yyyy-MM-dd HH:m');
+    final format = DateFormat('yyyy-MM-dd HH:mm');
+
+    DateTime? orderTimeStamp;
+    DateTime? deadlineTimeStamp;
+    try {
+      orderTimeStamp = format.parseStrict(json['orderTimeStamp']);
+    } catch (_) {
+      orderTimeStamp = null;
+    }
+    try {
+      deadlineTimeStamp = format.parseStrict(json['deadlineTimeStamp']);
+    } catch (_) {
+      deadlineTimeStamp = null;
+    }
+
     final order = ImportOrder(
       id: json['id'],
       commodity: Commodity(
@@ -43,8 +57,8 @@ class ImportOrder implements Serializable{
             phone: supplier['association']['phone']
           )
       ),
-      orderTimeStamp: format.parseStrict(json['orderTimeStamp']), /* TODO: 需要處理 ParseStrict出錯的問題 */
-      deadlineTimeStamp: format.parseStrict(json['deadlineTimeStamp']),
+      orderTimeStamp: orderTimeStamp,
+      deadlineTimeStamp: deadlineTimeStamp,
       responsible: Employee(
           responsible['name'],
           responsible['id'],
@@ -54,13 +68,18 @@ class ImportOrder implements Serializable{
           )
       )
     );
-    print(order.serialization());
     return order;
   }
 
+  static String? parseDateTime(DateTime? dateTime) {
+    if (dateTime == null) return null;
+    return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+  }
+
+
   @override
   String serialization() {
-    final formatter = DateFormat("yyyy-MM-dd HH:mm"); // ISO 8601 精確到分鐘
+    final formatter = DateFormat("yyyy-MM-dd HH:mm");
     return jsonEncode({
       "id" : id,
       "commodity" : commodity?.toJson(),
