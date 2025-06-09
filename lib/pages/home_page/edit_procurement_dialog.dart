@@ -104,7 +104,9 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
       loading: () => const Text('傳送中...'),
       data: (data) {
         if (data != null) {
-          Navigator.of(context).pop(true);
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            Navigator.of(context).pop(true);
+          });
         }
         return SizedBox.shrink();
       },
