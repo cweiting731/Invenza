@@ -36,10 +36,16 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
     final user = ref.read(userProvider);
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text('進貨列表'),
+        actions: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt))
+        ],
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _openAddProcurementDialog(user),
-        child: const Icon(Icons.add),
+        onPressed: () => _openEditProcurementPage(ImportOrder(responsible: user), EditMode.add),
         tooltip: '新增進貨單',
+        child: const Icon(Icons.add),
       ),
       body: asyncOrders.when(
         loading: () => Center(child: CircularProgressIndicator(),),
