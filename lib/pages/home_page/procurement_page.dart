@@ -49,13 +49,27 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
             itemCount: orders.length,
             itemBuilder: (context, index) {
               final order = orders[index];
-              print(order.commodity);
-              print(order.supplier);
-              print(order.responsible);
-              print(order.id);
-              print(order.orderTimeStamp);
-              print(order.deadlineTimeStamp);
-              print('-------------');
+              final responsible = order.responsible;
+              Widget? trailing;
+              if (user != null && responsible != null && user.id == responsible.id) {
+                trailing = Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    IconButton(
+                        onPressed: () => _openEditProcurementPage(order, EditMode.edit),
+                        icon: Icon(Icons.edit)
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(Icons.delete),
+                      color: Colors.red,
+                    ),
+                  ],
+                );
+              } else {
+                trailing = SizedBox.shrink();
+              }
+
 
               return Card(
                 surfaceTintColor: Colors.transparent,
@@ -67,6 +81,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
                   collapsedShape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                   title: Text('${order.id ?? '?'}'),
                   subtitle: Text('${order.commodity?.name ?? '查無商品名稱'} / ${order.commodity?.type ?? '查無商品型號'}'),
+                  trailing: trailing,
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(12),
@@ -98,15 +113,23 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
     );
   }
 
-  Future<void> _openAddProcurementDialog(Employee? user) async {
-    final result = await showDialog<bool>(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => EditProcurementDialog(importOrder: ImportOrder(responsible: user)),
+  Future<void> _openEditProcurementPage(ImportOrder order, EditMode mode) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProcurementPage(importOrder: order, editMode: mode,),
+      ),
     );
+
 
     // 如果返回值是 true，表示需要刷新資料
     if (result == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('新增成功！'),
+          duration: Duration(seconds: 2),
+        ),
+      );
       setState(() {
         _filters = FilterOptions();  // 這樣會觸發重新加載資料
       });
