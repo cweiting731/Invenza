@@ -21,10 +21,8 @@ class ImportOrdersNotifier extends StateNotifier<AsyncValue<List<ImportOrder>>> 
   ImportOrdersNotifier(this._repo, this._filters) : super(const AsyncLoading());
 
   Future<void> fetchOrders() async {
-    print('import order fetch order');
     try {
       final orders = await _repo.fetchOrders(filters: _filters);
-      print('success order');
       state = AsyncData(orders);
     } catch (e, st) {
       state = AsyncError(e, st);
@@ -52,11 +50,6 @@ class AddImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
     try {
       await _repo.addOrder(order);
       state = const AsyncData('success');
-      // // 直接更新資料或重新拉取資料
-      // final updatedOrders = await _repo.fetchOrders(filters: filters);
-      // print(updatedOrders);
-      // _ref.read(importOrdersProvider(filters).notifier).updateOrders(updatedOrders);
-
 
     } catch (e, st) {
       state = AsyncError(e, st);
