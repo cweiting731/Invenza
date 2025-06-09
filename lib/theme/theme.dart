@@ -54,4 +54,11 @@ final customTheme = ThemeData(
       padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
     ),
   ),
+  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    backgroundColor: lightColorScheme.primary,
+    unselectedItemColor: lightColorScheme.onPrimary,
+    selectedItemColor: lightColorScheme.onPrimaryContainer,
+    showUnselectedLabels: true,
+    enableFeedback: true,
+  ),
 );

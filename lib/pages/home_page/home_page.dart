@@ -5,6 +5,7 @@ import 'package:invenza/models/employee.dart';
 import 'package:invenza/pages/home_page/edit_procurement_dialog.dart';
 import 'package:invenza/pages/home_page/inventory_page.dart';
 import 'package:invenza/pages/home_page/procurement_page.dart';
+import 'package:invenza/theme/theme.dart';
 import '../../providers/auth_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -15,7 +16,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderStateMixin {
-  late final TabController _tabController;
+  int _index = 1;
   final List<TabItem> tabItems = [
     TabItem(
       title: '首頁',
@@ -52,11 +53,6 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: tabItems.length, vsync: this);
-
-    _tabController.addListener(() {
-      setState(() {});
-    });
   }
 
   @override
@@ -64,6 +60,8 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
     final user = ref.watch(authProvider).asData?.value;
     final screenWidth = MediaQuery.of(context).size.width;
     final isMobile = screenWidth < 600;
+
+    return _buildTabletOrDesktopLayout(user);
 
     return isMobile
         ? _buildMobileLayout(user)
@@ -76,29 +74,20 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
 
   Widget _buildTabletOrDesktopLayout(Employee? user) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(tabItems[_tabController.index].title),
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: List.generate(tabItems.length, (index) {
-              final item = tabItems[index];
-              final isSelected = _tabController.index == index;
-              return Tab(
-                text: item.title,
-                icon: Icon(
-                  isSelected ? item.selectedIcon : item.idleIcon,
-                  color: isSelected ? Colors.green : Colors.red,
-                ),
-              );
-            }
-          ),
-        ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: tabItems.map((item) => item.page).toList()
-      ),
-      floatingActionButton: tabItems[_tabController.index].floatingAction?.call(context),
+      body: tabItems[_index].page,
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _index,
+        onTap: (i) => setState(() => _index = i),
+        items: [
+          BottomNavigationBarItem(icon: Icon(tabItems[0].idleIcon), label: tabItems[0].title),
+          BottomNavigationBarItem(icon: Icon(tabItems[1].idleIcon), label: tabItems[1].title),
+          BottomNavigationBarItem(icon: Icon(tabItems[2].idleIcon), label: tabItems[2].title),
+          BottomNavigationBarItem(icon: Icon(tabItems[3].idleIcon), label: tabItems[3].title),
+          BottomNavigationBarItem(icon: Icon(tabItems[4].idleIcon), label: tabItems[4].title),
+        ]
+
+      )
     );
   }
 }
