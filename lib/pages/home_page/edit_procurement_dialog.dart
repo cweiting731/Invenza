@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/business_partner.dart';
 import 'package:invenza/models/commodity.dart';

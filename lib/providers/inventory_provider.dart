@@ -41,7 +41,7 @@ class InventoryRepository {
 
       final List rawData = data['data'];
       return rawData.map( (item) => InventoryItem.fromJson(item)).toList();
-    } catch (e, st) {
+    } catch (e) {
       rethrow;
     }
   }

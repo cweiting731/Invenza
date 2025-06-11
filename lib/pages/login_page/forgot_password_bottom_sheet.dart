@@ -36,7 +36,6 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
   @override
   Widget build(BuildContext context) {
     final api = ref.read(apiClientProvider);
-    final logger = ref.read(logProvider);
 
     String? info;
     Color infoColor = Colors.black87;
