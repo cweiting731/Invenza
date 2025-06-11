@@ -23,7 +23,7 @@ class IssueReportController extends StateNotifier<AsyncValue<String>> {
     state = AsyncValue.loading();
 
     try {
-      final data = await _api.post(
+      await _api.post(
         ApiRoute.getRoute('issue-report'),
         IssueReportData(issue, _logger.exportAsJson()),
       );

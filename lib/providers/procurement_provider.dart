@@ -36,21 +36,19 @@ class ImportOrdersNotifier extends StateNotifier<AsyncValue<List<ImportOrder>>> 
 
 final addImportOrderProvider = StateNotifierProvider.autoDispose<AddImportOrderNotifier, AsyncValue<String?>>((ref) {
   final repo = ref.watch(procurementRepositoryProvider);
-  return AddImportOrderNotifier(repo, ref);
+  return AddImportOrderNotifier(repo);
 });
 
 class AddImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
   final ProcurementRepository _repo;
-  final Ref _ref;
 
-  AddImportOrderNotifier(this._repo, this._ref) : super(const AsyncData(null));
+  AddImportOrderNotifier(this._repo) : super(const AsyncData(null));
 
   Future<void> addOrder(ImportOrder order, FilterOptions filters) async {
     state = const AsyncLoading();
     try {
       await _repo.addOrder(order);
       state = const AsyncData('success');
-
     } catch (e, st) {
       state = AsyncError(e, st);
     }
@@ -84,7 +82,7 @@ class ProcurementRepository {
 
       final List rawData = data['data'];
       return rawData.map( (order) => ImportOrder.fromJson(order)).toList();
-    } catch (e, st) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -95,11 +93,11 @@ class ProcurementRepository {
         throw Exception('尚未登入，你怎麼進來的?');
       }
 
-      final data = await _api.post(
+      await _api.post(
         ApiRoute.getRoute('procurement-add-data'),
         order
       );
-    } catch (e, st) {
+    } catch (e) {
       rethrow;
     }
   }

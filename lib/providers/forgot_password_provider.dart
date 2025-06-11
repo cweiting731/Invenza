@@ -3,24 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/transfer_data/forgot_password_data.dart';
 import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/services/api_client.dart';
-
-import '../services/log_service.dart';
 import 'api_provider.dart';
-import 'log_provider.dart';
 
 final forgotPasswordProvider = StateNotifierProvider.autoDispose<ForgotPasswordController, AsyncValue<String?>>(
   (ref) {
-    final logger = ref.read(logProvider);
     final api = ref.read(apiClientProvider);
-    return ForgotPasswordController(logger, api);
+    return ForgotPasswordController(api);
   }
 );
 
 class ForgotPasswordController extends StateNotifier<AsyncValue<String?>> {
-  final LogService _logger;
   final ApiClient _api;
 
-  ForgotPasswordController(this._logger, this._api) : super(const AsyncValue.data(null));
+  ForgotPasswordController(this._api) : super(const AsyncValue.data(null));
 
   Future<void> submit(String email, GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return;
@@ -33,7 +28,7 @@ class ForgotPasswordController extends StateNotifier<AsyncValue<String?>> {
     }
 
     try {
-      final data = await _api.post(
+      await _api.post(
         ApiRoute.getRoute('forgot-password'),
         ForgotPasswordData(email),
       );

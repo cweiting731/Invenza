@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/employee.dart';
-import 'package:invenza/pages/home_page/edit_procurement_dialog.dart';
 import 'package:invenza/pages/home_page/inventory_page.dart';
 import 'package:invenza/pages/home_page/procurement_page.dart';
-import 'package:invenza/theme/theme.dart';
 import '../../providers/auth_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -57,22 +55,17 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(authProvider).asData?.value;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final isMobile = screenWidth < 600;
+    final user = ref.watch(userProvider);
+    if (user == null || user.jwtToken == null || user.jwtToken!.isEmpty) {
+      return Scaffold(
+        body: Center(child: Text('請先登入')),
+      );
+    }
 
-    return _buildTabletOrDesktopLayout(user);
-
-    return isMobile
-        ? _buildMobileLayout(user)
-        : _buildTabletOrDesktopLayout(user);
+    return _buildContainer(user);
   }
 
-  Widget _buildMobileLayout(Employee? user) {
-    return Center(child: Text('手機端尚未做設定'));
-  }
-
-  Widget _buildTabletOrDesktopLayout(Employee? user) {
+  Widget _buildContainer(Employee? user) {
     return Scaffold(
       body: tabItems[_index].page,
       bottomNavigationBar: BottomNavigationBar(
