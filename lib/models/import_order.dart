@@ -38,6 +38,12 @@ class ImportOrder implements Serializable{
       deadlineTimeStamp = null;
     }
 
+    double quantity = 0.0;
+    try {
+      quantity = commodity['transactionValue']['quantity']?.toDouble();
+    } catch (_) {
+    }
+
     final order = ImportOrder(
       id: json['id'],
       commodity: Commodity(
@@ -45,7 +51,7 @@ class ImportOrder implements Serializable{
           commodity['type'],
           TransactionValue(
               unitPrice: commodity['transactionValue']['unitPrice'],
-              quantity: commodity['transactionValue']['quantity'],
+              quantity: quantity,
               totalCost: commodity['transactionValue']['totalCost']
           ),
       ),
