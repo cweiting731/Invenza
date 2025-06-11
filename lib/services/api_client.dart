@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:invenza/interface/serializable.dart';
 import 'log_service.dart';
+import 'package:invenza/logger/logger.dart';
 
 class ApiClient {
   final LogService logger;
@@ -22,7 +23,9 @@ class ApiClient {
         body: transferData.serialization(),
       );
 
-      final data = jsonDecode(response.body);
+      log.i('Response headers: ${response.headers}');
+      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(jsonDecode(utf8.decode(response.bodyBytes))) }');
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
 
       /* TODO: statusCode 各個判斷 */
       if (response.statusCode == 200) {
@@ -36,7 +39,7 @@ class ApiClient {
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
       Error.throwWithStackTrace(Exception('連線失敗，請確認伺服器是否有開啟'), st);
-    } catch (e, st) {
+    } catch (e) {
       rethrow;
     }
   }
@@ -52,8 +55,10 @@ class ApiClient {
           'Authorization': 'Bearer $token',
         },
       );
-
-      final data = jsonDecode(response.body);
+      
+      log.i('Response headers: ${response.headers}');
+      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(jsonDecode(utf8.decode(response.bodyBytes))) }');
+      final data = jsonDecode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
         return data;
@@ -66,7 +71,7 @@ class ApiClient {
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
       Error.throwWithStackTrace(Exception('連線失敗，請確認伺服器是否有開啟'), st);
-    } catch (e, st) {
+    } catch (e) {
       rethrow;
     }
   }
