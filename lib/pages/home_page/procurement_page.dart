@@ -7,7 +7,7 @@ import 'package:invenza/widgets/text_form.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../providers/procurement_provider.dart';
-import 'edit_procurement_dialog.dart';
+import 'edit_procurement_page.dart';
 
 class ProcurementPage extends ConsumerStatefulWidget {
   const ProcurementPage({super.key});
