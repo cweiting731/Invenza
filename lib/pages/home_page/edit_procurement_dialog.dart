@@ -11,6 +11,7 @@ import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/providers/procurement_provider.dart';
+import 'package:invenza/widgets/text_form.dart';
 
 enum EditMode { add, edit }
 
@@ -112,20 +113,19 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
       error: (e, _) => Text(api.formatErrorMessage(e), style: TextStyle(color: Colors.red),),
       orElse: () => const SizedBox.shrink(),
     );
-    // log.i('edit_procurement_page');
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back), // 左側 icon，可改成你需要的
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.of(context).pop(false); // 返回上一頁
+            Navigator.of(context).pop(false);
           },
         ),
         title: const Text('新增進貨單'),
-        centerTitle: true, // 可選：讓標題置中
+        centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.check), // 右側 icon，可改成你需要的
+            icon: const Icon(Icons.check),
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 final commodityName = _commodityNameController.text.trim();
@@ -182,7 +182,16 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                     prefixIcon: Icon(Icons.attach_money),
                   ),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) => value!.isEmpty ? '請輸入單價' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '請輸入單價';
+                    }
+                    final parsedValue = double.tryParse(value);
+                    if (parsedValue == null || parsedValue < 0) {
+                      return '請輸入有效的單價';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 12,),
                 TextFormField(
@@ -192,9 +201,18 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                     prefixIcon: Icon(Icons.confirmation_number),
                   ),
                   keyboardType: TextInputType.number,
-                  validator: (value) => value!.isEmpty ? '請輸入數量' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '請輸入數量';
+                    }
+                    final parsedValue = double.tryParse(value);
+                    if (parsedValue == null || parsedValue <= 0) {
+                      return '請輸入有效的數量';
+                    }
+                    return null;
+                  },
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
                 TextFormField(
                   controller: _totalCostController,
                   decoration: const InputDecoration(
@@ -202,16 +220,16 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                     prefixIcon: Icon(Icons.payments),
                   ),
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) => value!.isEmpty ? '請輸入總價' : null,
-                ),
-                const SizedBox(height: 4,),
-                TextFormField(
-                  controller: _supplierNameController,
-                  decoration: const InputDecoration(
-                    labelText: '供應商名稱',
-                    prefixIcon: Icon(Icons.business),
-                  ),
-                  validator: (value) => value!.isEmpty ? '請輸入供應商名稱' : null,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '請輸入總價';
+                    }
+                    final parsedValue = double.tryParse(value);
+                    if (parsedValue == null || parsedValue < 0) {
+                      return '請輸入有效的總價';
+                    }
+                    return null;
+                  },
                 ),
                 const SizedBox(height: 12,),
                 normalTextFormField(controller: _supplierNameController, label: '供應商名稱', icon: Icons.business),
