@@ -101,3 +101,31 @@ Widget normalTextFormField({
     },
   );
 }
+
+Widget emailTextFormField({
+  required TextEditingController controller,
+  required String label,
+  String? hintText,
+  IconData? icon,
+  String? Function(String?)? validator,
+}) {
+  return TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: label,
+      hintText: hintText,
+      prefixIcon: icon != null ? Icon(icon) : const Icon(Icons.email),
+    ),
+    keyboardType: TextInputType.emailAddress,
+    validator: validator ?? (value) {
+      final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+      if (value == null || value.isEmpty) {
+        return '$label 不能為空';
+      }
+      if (!emailRegex.hasMatch(value)) {
+        return '$label 格式錯誤';
+      }
+      return null;
+    },
+  );
+}

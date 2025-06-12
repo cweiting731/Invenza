@@ -236,16 +236,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                 const SizedBox(height: 12,),
                 normalTextFormField(controller: _supplierIdController, label: '供應商編號', icon: Icons.badge),
                 const SizedBox(height: 12,),
-                TextFormField(
-                  controller: _supplierEmailController,
-                  decoration: const InputDecoration(
-                    labelText: '供應商 Email',
-                    prefixIcon: Icon(Icons.email),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) =>
-                  value!.isEmpty ? '請輸入 Email' : null,
-                ),
+                emailTextFormField(controller: _supplierEmailController, label: '供應商 Email'), 
                 const SizedBox(height: 12,),
                 TextFormField(
                   controller: _supplierPhoneController,
