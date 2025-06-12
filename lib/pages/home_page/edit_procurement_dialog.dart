@@ -227,7 +227,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                   ),
                   validator: (value) => value!.isEmpty ? '請輸入供應商名稱' : null,
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
                 TextFormField(
                   controller: _supplierIdController,
                   decoration: const InputDecoration(
@@ -236,7 +236,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                   ),
                   validator: (value) => value!.isEmpty ? '請輸入供應商編號' : null,
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
                 TextFormField(
                   controller: _supplierEmailController,
                   decoration: const InputDecoration(
@@ -258,64 +258,18 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                   validator: (value) =>
                   value!.isEmpty ? '請輸入電話號碼' : null,
                 ),
-                const SizedBox(height: 4,),
-                TextFormField(
-                  controller: _orderTimeStampController,
-                  decoration: const InputDecoration(
-                    labelText: '下單日期',
-                    prefixIcon: Icon(Icons.calendar_today),
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2025),
-                      lastDate: DateTime(2030),
-                    );
-                    if (date == null) return;
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (time == null) return;
-                    final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                    _orderTimeStampController.text = format.format(dateTime);
-                  },
-                ),
-                const SizedBox(height: 4,),
-                TextFormField(
-                  controller: _deadlineTimeStampController,
-                  decoration: const InputDecoration(
-                    labelText: '到貨日期',
-                    prefixIcon: Icon(Icons.calendar_today),
-                  ),
-                  readOnly: true,
-                  onTap: () async {
-                    final date = await showDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2025),
-                      lastDate: DateTime(2030),
-                    );
-                    if (date == null) return;
-                    final time = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-                    if (time == null) return;
-                    final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
-                    _deadlineTimeStampController.text = format.format(dateTime);
-                  },
-                ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
+                timeSelectedTextFormField(controller: _orderTimeStampController, label: '下單日期', context: context),
+                const SizedBox(height: 12,),
+                timeSelectedTextFormField(controller: _deadlineTimeStampController, label: '到貨日期', context: context),
+                const SizedBox(height: 12,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text('負責人: ${order.responsible?.name}'),
+                    responsibleText(context: context, responsible: order.responsible),
                   ],
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
                 feedbackWidget
               ],
             ),

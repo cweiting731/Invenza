@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:invenza/models/employee.dart';
 
 Widget responsibleText({
@@ -34,5 +35,37 @@ Widget responsibleText({
       );
     }, 
     child: Text('負責人: ${responsible?.name}'),
+  );
+}
+
+Widget timeSelectedTextFormField({
+  required TextEditingController controller,
+  required String label,
+  required BuildContext context
+}) {
+  final format = DateFormat('yyyy-MM-dd HH:mm');
+  return TextFormField(
+    controller: controller,
+    readOnly: true,
+    decoration: InputDecoration(
+      labelText: label,
+      prefixIcon: const Icon(Icons.calendar_today),
+    ),
+    onTap: () async {
+      final date = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2100),
+      );
+      if (date == null) return;
+      final time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (time == null) return;
+      final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
+      controller.text = format.format(dateTime);
+    },
   );
 }
