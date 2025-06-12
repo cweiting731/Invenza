@@ -67,5 +67,16 @@ Widget timeSelectedTextFormField({
       final dateTime = DateTime(date.year, date.month, date.day, time.hour, time.minute);
       controller.text = format.format(dateTime);
     },
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return '請選擇時間';
+      }
+      try {
+        format.parseStrict(value);
+      } catch (_) {
+        return '時間格式錯誤，請使用 yyyy-MM-dd HH:mm 格式';
+      }
+      return null;
+    },
   );
 }
