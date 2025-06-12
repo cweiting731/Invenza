@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/import_order.dart';
 import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/widgets/text_form.dart';
 
 import '../../providers/auth_provider.dart';
 import '../../providers/procurement_provider.dart';
@@ -93,14 +94,22 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
                           Text('單價: ${order.commodity?.transactionValue?.unitPrice ?? '查無商品單價'}'),
                           Text('數量: ${order.commodity?.transactionValue?.quantity ?? '查無商品數量'}'),
                           Text('總價: ${order.commodity?.transactionValue?.totalCost ?? '查無商品總價'}'),
-                          SizedBox(height: 4,),
+                          const SizedBox(height: 4,),
                           Text('供應商: ${order.supplier?.name ?? '查無供應商名稱'}'),
                           Text('供應商email: ${order.supplier?.association.email ?? '查無供應商email'}'),
                           Text('供應商電話: ${order.supplier?.association.phone ?? '查無供應商電話'}'),
-                          SizedBox(height: 4,),
+                          const SizedBox(height: 4,),
                           Text('下單日期: ${ImportOrder.parseDateTime(order.orderTimeStamp) ?? '查無下單日期'}'),
                           Text('截止日期: ${ImportOrder.parseDateTime(order.deadlineTimeStamp) ?? '查無截止日期'}'),
-                          Text('負責人: ${order.responsible?.name ?? '查無負責人'}'),
+                          const SizedBox(height: 4,),
+                          Row(
+                            children: [
+                              responsibleText(
+                                responsible: order.responsible,
+                                context: context,
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     )
@@ -124,16 +133,14 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
 
 
     // 如果返回值是 true，表示需要刷新資料
-    if (result == true) {
+    if (result == true && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('新增成功！'),
           duration: Duration(seconds: 2),
         ),
       );
-      setState(() {
-        _filters = FilterOptions();  // 這樣會觸發重新加載資料
-      });
+      ref.invalidate(importOrdersProvider(_filters)); // 觸發 Riverpod 重新抓資料
     }
   }
 }
