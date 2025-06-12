@@ -80,3 +80,24 @@ Widget timeSelectedTextFormField({
     },
   );
 }
+
+Widget normalTextFormField({
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+  String? Function(String?)? validator,
+}) {
+  return TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+    ),
+    validator: validator ?? (value) {
+      if (value == null || value.isEmpty) {
+        return '請輸入 $label';
+      }
+      return null;
+    },
+  );
+}

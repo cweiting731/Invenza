@@ -168,27 +168,13 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                 if (editMode == EditMode.edit)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
-                    children: [Text('進貨單ID'),],
+                    children: [Text('進貨單ID：${order.id}'),],
                   ),
-                  const SizedBox(height: 4,),
-                TextFormField(
-                  controller: _commodityNameController,
-                  decoration: const InputDecoration(
-                    labelText: '商品名稱',
-                    prefixIcon: Icon(Icons.shopping_bag),
-                  ),
-                  validator: (value) => value!.isEmpty ? '請輸入商品名稱' : null,
-                ),
-                const SizedBox(height: 4,),
-                TextFormField(
-                  controller: _commodityTypeController,
-                  decoration: const InputDecoration(
-                    labelText: '商品型號',
-                    prefixIcon: Icon(Icons.qr_code),
-                  ),
-                  validator: (value) => value!.isEmpty ? '請輸入型號' : null,
-                ),
-                const SizedBox(height: 4,),
+                  const SizedBox(height: 12,),
+                normalTextFormField(controller: _commodityNameController, label: '商品名稱', icon: Icons.shopping_bag),
+                const SizedBox(height: 12,),
+                normalTextFormField(controller: _commodityTypeController, label: '商品型號', icon: Icons.qr_code),
+                const SizedBox(height: 12,),
                 TextFormField(
                   controller: _unitPriceController,
                   decoration: const InputDecoration(
@@ -198,7 +184,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   validator: (value) => value!.isEmpty ? '請輸入單價' : null,
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
                 TextFormField(
                   controller: _quantityController,
                   decoration: const InputDecoration(
@@ -228,14 +214,9 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                   validator: (value) => value!.isEmpty ? '請輸入供應商名稱' : null,
                 ),
                 const SizedBox(height: 12,),
-                TextFormField(
-                  controller: _supplierIdController,
-                  decoration: const InputDecoration(
-                    labelText: '供應商編號',
-                    prefixIcon: Icon(Icons.badge),
-                  ),
-                  validator: (value) => value!.isEmpty ? '請輸入供應商編號' : null,
-                ),
+                normalTextFormField(controller: _supplierNameController, label: '供應商名稱', icon: Icons.business),
+                const SizedBox(height: 12,),
+                normalTextFormField(controller: _supplierIdController, label: '供應商編號', icon: Icons.badge),
                 const SizedBox(height: 12,),
                 TextFormField(
                   controller: _supplierEmailController,
@@ -247,7 +228,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                   validator: (value) =>
                   value!.isEmpty ? '請輸入 Email' : null,
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(height: 12,),
                 TextFormField(
                   controller: _supplierPhoneController,
                   decoration: const InputDecoration(
