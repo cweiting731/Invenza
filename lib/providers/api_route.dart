@@ -11,6 +11,7 @@ class ApiRoute {
     'procurement-get-data' : '/api/procurement/get-data',
     'procurement-add-data' : '/api/procurement/add-data',
     'procurement-update-data' : '/api/procurement/update-data',
+    'procurement-delete-data' : '/api/procurement/delete-data',
     'inventory-get-data' : '/api/inventory/get-data'
   };
 

@@ -81,6 +81,31 @@ class EditImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
   }
 }
 
+final deleteImportOrderProvider = StateNotifierProvider.autoDispose<DeleteImportOrderNotifier, AsyncValue<String?>>((ref) {
+  final repo = ref.watch(procurementRepositoryProvider);
+  return DeleteImportOrderNotifier(repo);
+});
+
+class DeleteImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
+  final ProcurementRepository _repo;
+
+  DeleteImportOrderNotifier(this._repo) : super(const AsyncData(null));
+
+  Future<void> deleteOrder(ImportOrder order) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.deleteOrder(order);
+      if (mounted) {
+        state = const AsyncData('success');
+      }
+    } catch (e, st) {
+      if (mounted) {
+        state = AsyncError(e, st);
+      }
+    }
+  }
+}
+
 final procurementRepositoryProvider = Provider<ProcurementRepository>((ref) {
   final api = ref.read(apiClientProvider);
   final user = ref.read(userProvider);
@@ -138,6 +163,24 @@ class ProcurementRepository {
       await _api.put(
         ApiRoute.getRoute('procurement-update-data'),
         order, 
+        token: _user.jwtToken!
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> deleteOrder(ImportOrder order) async {
+    try {
+      if (_user == null || _user.jwtToken == null) {
+        throw Exception('尚未登入，你怎麼進來的?');
+      }
+
+      await _api.delete(
+        ApiRoute.getRoute('procurement-delete-data'),
+        {
+          'id': order.id?.toString() ?? '',
+        },
         token: _user.jwtToken!
       );
     } catch (e) {

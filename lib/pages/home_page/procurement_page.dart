@@ -31,6 +31,46 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
     final api = ref.read(apiClientProvider);
     final user = ref.read(userProvider);
 
+    // 監聽刪除狀態，處理 UI
+    ref.listen<AsyncValue<String?>> (
+      deleteImportOrderProvider,
+          (prev, next) {
+        next.when(
+              data: (result) {
+            if (result == 'success' && mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('✅ 刪除成功'),
+                  duration: Duration(seconds: 2),  
+                ),
+              );
+              ref.invalidate(importOrdersProvider(_filters)); // 刷新資料
+            }
+          },
+          loading: () {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('⌛ 正在刪除中...'),
+                  duration: Duration(seconds: 2),
+              ),
+              );
+            }
+          },
+          error: (e, _) {
+            if (mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('❌ 刪除失敗：${api.formatErrorMessage(e)}'),
+                  duration: Duration(seconds: 5),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: Text('進貨列表'),
@@ -62,7 +102,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
                         icon: Icon(Icons.edit)
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () => _deleteOrder(order),
                       icon: Icon(Icons.delete),
                       color: Colors.red,
                     ),
@@ -134,7 +174,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
 
     // 如果返回值是 true，表示需要刷新資料
     if (result == true && mounted) {
-      final message = mode == EditMode.add ? '新增成功！' : '修改成功！';
+      final message = mode == EditMode.add ? '✅ 新增成功！' : '✅ 修改成功！';
       // 顯示 Snackbar 提示新增或修改成功
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -145,4 +185,32 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
       ref.invalidate(importOrdersProvider(_filters)); // 觸發 Riverpod 重新抓資料
     }
   }
+
+  Future<void> _deleteOrder(ImportOrder order) async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('刪除進貨單'),
+        content: Text('確定要刪除這個進貨單嗎？'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('取消'),
+          ),
+          ElevatedButton(
+            onPressed: () async {
+              Navigator.of(context).pop(true); // 關閉對話框並返回 true
+            },
+            child: Text('刪除'),
+          ),
+        ],
+      ),
+    );
+
+    if (result == true && mounted){
+      await ref.read(deleteImportOrderProvider.notifier).deleteOrder(order);
+      // 不要在這裡再 show Snackbar 或 listen，統一交給 build 裡的 ref.listen 處理
+    }
+  }
+
 }
