@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/models/import_order.dart';
 import 'package:invenza/models/transfer_data/filter_options.dart';
@@ -44,13 +45,38 @@ class AddImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
 
   AddImportOrderNotifier(this._repo) : super(const AsyncData(null));
 
-  Future<void> addOrder(ImportOrder order, FilterOptions filters) async {
+  Future<void> addOrder(ImportOrder order) async {
     state = const AsyncLoading();
     try {
       await _repo.addOrder(order);
       state = const AsyncData('success');
     } catch (e, st) {
       state = AsyncError(e, st);
+    }
+  }
+}
+
+final editImportOrderProvider = StateNotifierProvider.autoDispose<EditImportOrderNotifier, AsyncValue<String?>>((ref) {
+  final repo = ref.watch(procurementRepositoryProvider);
+  return EditImportOrderNotifier(repo);
+});
+
+class EditImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
+  final ProcurementRepository _repo;
+
+  EditImportOrderNotifier(this._repo) : super(const AsyncData(null));
+
+  Future<void> editOrder(ImportOrder order) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.editOrder(order);
+      if (mounted) {
+        state = const AsyncData('success');
+      }
+    } catch (e, st) {
+      if (mounted) {
+        state = AsyncError(e, st);
+      }
     }
   }
 }
@@ -95,7 +121,24 @@ class ProcurementRepository {
 
       await _api.post(
         ApiRoute.getRoute('procurement-add-data'),
-        order
+        order, 
+        token: _user.jwtToken!
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> editOrder(ImportOrder order) async {
+    try {
+      if (_user == null || _user.jwtToken == null) {
+        throw Exception('尚未登入，你怎麼進來的?');
+      }
+
+      await _api.put(
+        ApiRoute.getRoute('procurement-update-data'),
+        order, 
+        token: _user.jwtToken!
       );
     } catch (e) {
       rethrow;

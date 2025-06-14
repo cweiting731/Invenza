@@ -99,20 +99,47 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
       );
     }
 
-    final addState = ref.watch(addImportOrderProvider);
-    final feedbackWidget = addState.maybeWhen(
-      loading: () => const Text('傳送中...'),
+    final AsyncValue<String?> addState = editMode == EditMode.add
+    ? ref.watch(addImportOrderProvider)
+    : ref.watch(editImportOrderProvider);
+
+    Widget feedbackWidget = addState.when(
+      loading: () { 
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // 在畫面渲染後顯示 SnackBar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: const Text('傳送中...'),
+              duration: const Duration(seconds: 2),
+            ),
+          );
+        });
+        return const Text('傳送中...');
+      },
       data: (data) {
-        if (data != null) {
+        if (data == 'success') {
+          // 如果是新增或編輯成功，則關閉頁面並返回 true 延遲pop
           WidgetsBinding.instance.addPostFrameCallback((_) {
             Navigator.of(context).pop(true);
           });
         }
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
-      error: (e, _) => Text(api.formatErrorMessage(e), style: TextStyle(color: Colors.red),),
-      orElse: () => const SizedBox.shrink(),
+      error: (e, _) { 
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          // 在畫面渲染後顯示 SnackBar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(api.formatErrorMessage(e), style: TextStyle(color: Colors.red),),
+              duration: Duration(seconds: 2),
+            ),
+          );
+        });
+        return Text(api.formatErrorMessage(e), style: TextStyle(color: Colors.red));
+      },
     );
+
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -148,9 +175,18 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                         deadlineTimeStamp: deadlineTimeStamp,
                         responsible: order.responsible
                     ),
-                    FilterOptions());
+                  );
                 } else {
-
+                  await ref.read(editImportOrderProvider.notifier).editOrder(
+                    ImportOrder(
+                        id: order.id,
+                        commodity: Commodity(commodityName, commodityType, TransactionValue(unitPrice: unitPrice, quantity: quantity, totalCost: totalCost)),
+                        supplier: BusinessPartner(supplierName, supplierId, Association(email: supplierEmail, phone: supplierPhone)),
+                        orderTimeStamp: orderTimeStamp,
+                        deadlineTimeStamp: deadlineTimeStamp,
+                        responsible: order.responsible
+                    ),
+                  );
                 }
               }
             },

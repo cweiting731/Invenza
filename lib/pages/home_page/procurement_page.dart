@@ -134,9 +134,11 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
 
     // 如果返回值是 true，表示需要刷新資料
     if (result == true && mounted) {
+      final message = mode == EditMode.add ? '新增成功！' : '修改成功！';
+      // 顯示 Snackbar 提示新增或修改成功
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('新增成功！'),
+          content: Text(message),
           duration: Duration(seconds: 2),
         ),
       );
