@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:invenza/models/employee.dart';
+import 'package:invenza/models/transaction_value.dart';
 
 Widget responsibleText({
   Employee? responsible,
@@ -129,3 +130,43 @@ Widget emailTextFormField({
     },
   );
 }
+
+Widget transactionValueTextFormField({
+  required TextEditingController thisController,
+  required String label,
+  required IconData icon,
+  required TextEditingController unitPriceController,
+  required TextEditingController quantityController,
+  required TextEditingController totalCostController,
+}) {
+  return TextFormField(
+    controller: thisController, 
+    decoration: InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+    ),
+    keyboardType: TextInputType.numberWithOptions(decimal: true),
+    textInputAction: TextInputAction.done,
+    onFieldSubmitted: (_) {
+      double? unitPrice = double.tryParse(unitPriceController.text.trim());
+      double? quantity = double.tryParse(quantityController.text.trim());
+      double? totalCost = double.tryParse(totalCostController.text.trim());
+      TransactionValue? newPrice = TransactionValue.autoFill(unitPrice: unitPrice, quantity: quantity, totalCost: totalCost);
+      if (newPrice != null) {
+        unitPriceController.text = newPrice.unitPrice.toString();
+        quantityController.text = newPrice.quantity.toString();
+        totalCostController.text = newPrice.totalCost.toString();
+      }
+    },
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return '請輸入 $label';
+      }
+      final parsedValue = double.tryParse(value);
+      if (parsedValue == null || parsedValue < 0) {
+        return '請輸入有效的 $label';
+      }
+      return null;
+    },
+  );
+}  
