@@ -106,13 +106,13 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
     Widget feedbackWidget = addState.when(
       loading: () { 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          // 在畫面渲染後顯示 SnackBar
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('傳送中...'),
-              duration: const Duration(seconds: 2),
-            ),
-          );
+          // // 在畫面渲染後顯示 SnackBar
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   SnackBar(
+          //     content: const Text('傳送中...'),
+          //     duration: const Duration(seconds: ),
+          //   ),
+          // );
         });
         return const Text('傳送中...');
       },
