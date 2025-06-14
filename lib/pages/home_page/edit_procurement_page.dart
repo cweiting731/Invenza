@@ -175,61 +175,31 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
                 const SizedBox(height: 12,),
                 normalTextFormField(controller: _commodityTypeController, label: '商品型號', icon: Icons.qr_code),
                 const SizedBox(height: 12,),
-                TextFormField(
-                  controller: _unitPriceController,
-                  decoration: const InputDecoration(
-                    labelText: '單價',
-                    prefixIcon: Icon(Icons.attach_money),
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '請輸入單價';
-                    }
-                    final parsedValue = double.tryParse(value);
-                    if (parsedValue == null || parsedValue < 0) {
-                      return '請輸入有效的單價';
-                    }
-                    return null;
-                  },
+                transactionValueTextFormField(
+                  thisController: _unitPriceController, 
+                  label: '單價', 
+                  icon: Icons.attach_money, 
+                  unitPriceController: _unitPriceController, 
+                  quantityController: _quantityController, 
+                  totalCostController: _totalCostController
                 ),
                 const SizedBox(height: 12,),
-                TextFormField(
-                  controller: _quantityController,
-                  decoration: const InputDecoration(
-                    labelText: '數量',
-                    prefixIcon: Icon(Icons.confirmation_number),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '請輸入數量';
-                    }
-                    final parsedValue = double.tryParse(value);
-                    if (parsedValue == null || parsedValue <= 0) {
-                      return '請輸入有效的數量';
-                    }
-                    return null;
-                  },
+                transactionValueTextFormField(
+                  thisController: _quantityController, 
+                  label: '數量', 
+                  icon: Icons.confirmation_number, 
+                  unitPriceController: _unitPriceController, 
+                  quantityController: _quantityController, 
+                  totalCostController: _totalCostController
                 ),
                 const SizedBox(height: 12,),
-                TextFormField(
-                  controller: _totalCostController,
-                  decoration: const InputDecoration(
-                    labelText: '總價',
-                    prefixIcon: Icon(Icons.payments),
-                  ),
-                  keyboardType: TextInputType.numberWithOptions(decimal: true),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return '請輸入總價';
-                    }
-                    final parsedValue = double.tryParse(value);
-                    if (parsedValue == null || parsedValue < 0) {
-                      return '請輸入有效的總價';
-                    }
-                    return null;
-                  },
+                transactionValueTextFormField(
+                  thisController: _totalCostController, 
+                  label: '總價', 
+                  icon: Icons.payments, 
+                  unitPriceController: _unitPriceController, 
+                  quantityController: _quantityController, 
+                  totalCostController: _totalCostController
                 ),
                 const SizedBox(height: 12,),
                 normalTextFormField(controller: _supplierNameController, label: '供應商名稱', icon: Icons.business),
