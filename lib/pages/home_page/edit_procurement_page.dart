@@ -148,7 +148,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
             Navigator.of(context).pop(false);
           },
         ),
-        title: const Text('新增進貨單'),
+        title: Text('${editMode == EditMode.add ? '新增' : '編輯'}進貨單'),
         centerTitle: true,
         actions: [
           IconButton(
