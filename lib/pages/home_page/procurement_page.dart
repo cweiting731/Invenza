@@ -17,17 +17,15 @@ class ProcurementPage extends ConsumerStatefulWidget {
 }
 
 class _ProcurementPageState extends ConsumerState<ProcurementPage> {
-  late FilterOptions _filters;
 
   @override
   void initState() {
-    _filters = FilterOptions();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final asyncOrders = ref.watch(importOrdersProvider(_filters));
+    final asyncOrders = ref.watch(importOrdersProvider);
     final api = ref.read(apiClientProvider);
     final user = ref.read(userProvider);
 
@@ -44,7 +42,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
                   duration: Duration(seconds: 2),  
                 ),
               );
-              ref.invalidate(importOrdersProvider(_filters)); // 刷新資料
+              ref.invalidate(importOrdersProvider); // 刷新資料
             }
           },
           loading: () {
@@ -182,7 +180,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
           duration: Duration(seconds: 2),
         ),
       );
-      ref.invalidate(importOrdersProvider(_filters)); // 觸發 Riverpod 重新抓資料
+      ref.invalidate(importOrdersProvider); // 觸發 Riverpod 重新抓資料
     }
   }
 

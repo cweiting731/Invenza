@@ -8,10 +8,15 @@ import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
-final importOrdersProvider = StateNotifierProvider.family<ImportOrdersNotifier, AsyncValue<List<ImportOrder>>, FilterOptions>(
-        (ref, filters) {
+final importOrderFilterProvider = StateProvider<FilterOptions>((ref) {
+  return FilterOptions(deadlineEnd: DateTime.now());
+});
+
+final importOrdersProvider = StateNotifierProvider<ImportOrdersNotifier, AsyncValue<List<ImportOrder>>>(
+        (ref) {
       final repo = ref.read(procurementRepositoryProvider);
-      return ImportOrdersNotifier(repo, filters)..fetchOrders();
+      final filter = ref.watch(importOrderFilterProvider);
+      return ImportOrdersNotifier(repo, filter)..fetchOrders();
     }
 );
 
