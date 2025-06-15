@@ -85,6 +85,12 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
         loading: () => Center(child: CircularProgressIndicator(),),
         error: (err, _) => Center(child: Text(api.formatErrorMessage(err)),),
         data: (orders) {
+          if (orders.isEmpty) {
+            return Center(
+              child: Text('查無目標進貨單'),
+            );
+          }
+
           return ListView.builder(
             itemCount: orders.length,
             itemBuilder: (context, index) {
