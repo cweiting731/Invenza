@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/import_order.dart';
 import 'package:invenza/models/transfer_data/filter_options.dart';
+import 'package:invenza/pages/home_page/edit_procurement_filter.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/widgets/text_form.dart';
 
@@ -69,11 +71,15 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
       },
     );
 
+
     return Scaffold(
       appBar: AppBar(
         title: Text('進貨列表'),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.filter_alt))
+          IconButton(
+            icon: Icon(Icons.filter_alt),
+            onPressed: () => _showFilterOptions(), 
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -217,4 +223,25 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
     }
   }
 
+  Future<void> _showFilterOptions() async {
+    log.i('Showing filter options dialog');
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditProcurementFilter(),
+      )
+    );
+    log.i('Filter options dialog result: $result');
+
+    if (result == true && mounted) {
+      // 如果返回值是 true，表示篩選條件已更新
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('✅ 篩選條件已更新！'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      ref.invalidate(importOrdersProvider); // 重新抓取資料
+    }
+  }
 }
