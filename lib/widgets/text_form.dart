@@ -103,6 +103,20 @@ Widget normalTextFormField({
   );
 }
 
+Widget normalTextFormFieldWithoutValidator({
+  required TextEditingController controller,
+  required String label,
+  required IconData icon,
+}) {
+  return TextFormField(
+    controller: controller,
+    decoration: InputDecoration(
+      labelText: label,
+      prefixIcon: Icon(icon),
+    ),
+  );
+}
+
 Widget emailTextFormField({
   required TextEditingController controller,
   required String label,
