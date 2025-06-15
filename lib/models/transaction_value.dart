@@ -1,5 +1,3 @@
-import 'package:flutter/services.dart';
-
 class TransactionValue {
   double unitPrice;
   double quantity;

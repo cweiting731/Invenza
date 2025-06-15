@@ -7,7 +7,6 @@ import 'package:invenza/models/business_partner.dart';
 import 'package:invenza/models/commodity.dart';
 import 'package:invenza/models/import_order.dart';
 import 'package:invenza/models/transaction_value.dart';
-import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/providers/procurement_provider.dart';
@@ -105,15 +104,6 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
 
     Widget feedbackWidget = addState.when(
       loading: () { 
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          // // 在畫面渲染後顯示 SnackBar
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   SnackBar(
-          //     content: const Text('傳送中...'),
-          //     duration: const Duration(seconds: ),
-          //   ),
-          // );
-        });
         return const Text('傳送中...');
       },
       data: (data) {
