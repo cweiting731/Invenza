@@ -29,6 +29,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
     final asyncOrders = ref.watch(importOrdersProvider);
     final api = ref.read(apiClientProvider);
     final user = ref.read(userProvider);
+    final bool haveProcurementPermission = ref.read(authProvider.notifier).haveProcurementPermission();
 
     // 監聽刪除狀態，處理 UI
     ref.listen<AsyncValue<String?>> (
@@ -85,11 +86,13 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openEditProcurementPage(ImportOrder(responsible: user), EditMode.add),
-        tooltip: '新增進貨單',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: haveProcurementPermission
+            ? FloatingActionButton(
+                onPressed: () => _openEditProcurementPage(ImportOrder(responsible: user), EditMode.add),
+                tooltip: '新增進貨單',
+                child: const Icon(Icons.add),
+              )
+            : null,
       body: asyncOrders.when(
         loading: () => Center(child: CircularProgressIndicator(),),
         error: (err, _) => Center(child: Text(api.formatErrorMessage(err)),),
@@ -105,26 +108,24 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
             itemBuilder: (context, index) {
               final order = orders[index];
               final responsible = order.responsible;
-              Widget? trailing;
-              if (user != null && responsible != null && user.id == responsible.id) {
-                trailing = Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
+
+              // 只有有採購權限的使用者才顯示編輯和刪除按鈕，以及 user.id == responsible.id 才會顯示這些按鈕
+              Widget trailing = haveProcurementPermission && user != null && responsible != null && user.id == responsible.id
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
                         onPressed: () => _openEditProcurementPage(order, EditMode.edit),
                         icon: Icon(Icons.edit)
-                    ),
-                    IconButton(
-                      onPressed: () => _deleteOrder(order),
-                      icon: Icon(Icons.delete),
-                      color: Colors.red,
-                    ),
-                  ],
-                );
-              } else {
-                trailing = SizedBox.shrink();
-              }
-
+                      ),
+                      IconButton(
+                        onPressed: () => _deleteOrder(order),
+                        icon: Icon(Icons.delete),
+                        color: Colors.red,
+                      ),
+                    ],
+                  )
+                : SizedBox.shrink();
 
               return Card(
                 surfaceTintColor: Colors.transparent,
