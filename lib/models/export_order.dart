@@ -6,7 +6,7 @@ import 'package:invenza/models/business_partner.dart';
 import 'package:invenza/models/commodity.dart';
 import 'package:invenza/models/employee.dart';
 
-class Exportorder implements Serializable {
+class ExportOrder implements Serializable {
   int? id;
   Commodity? commodity;
   BusinessPartner? distributor;
@@ -14,7 +14,7 @@ class Exportorder implements Serializable {
   DateTime? deadlineTimeStamp;
   Employee? responsible;
 
-  Exportorder({
+  ExportOrder({
     this.id,
     this.commodity,
     this.distributor,
@@ -23,7 +23,7 @@ class Exportorder implements Serializable {
     this.responsible,
   });
 
-  factory Exportorder.fromJson(Map<String, dynamic> json) {
+  factory ExportOrder.fromJson(Map<String, dynamic> json) {
     final commodity = json['commodity'];
     final distributor = json['distributor'];
     final responsible = json['responsible'];
@@ -43,7 +43,7 @@ class Exportorder implements Serializable {
       deadlineTimeStamp = null;
     }
 
-    return Exportorder(
+    return ExportOrder(
       id: json['id'],
       commodity: Commodity.fromJson(commodity),
       distributor: BusinessPartner.fromJson(distributor),
