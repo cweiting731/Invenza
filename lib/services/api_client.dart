@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -35,6 +36,8 @@ class ApiClient {
       }
     } on SocketException catch (e, st) {
       Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
+    } on TimeoutException catch (e, st) {
+      Error.throwWithStackTrace(Exception('請求逾時，請稍後再試'), st);
     } on FormatException catch (e, st) {
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
@@ -67,6 +70,8 @@ class ApiClient {
       }
     } on SocketException catch (e, st) {
       Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
+    } on TimeoutException catch (e, st) {
+      Error.throwWithStackTrace(Exception('請求逾時，請稍後再試'), st);
     } on FormatException catch (e, st) {
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
@@ -98,6 +103,8 @@ class ApiClient {
       }
     } on SocketException catch (e, st) {
       Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
+    } on TimeoutException catch (e, st) {
+      Error.throwWithStackTrace(Exception('請求逾時，請稍後再試'), st);
     } on FormatException catch (e, st) {
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
@@ -128,6 +135,8 @@ class ApiClient {
       }
     } on SocketException catch (e, st) {
       Error.throwWithStackTrace(Exception('無法連接伺服器，請檢查網路連線'), st);
+    } on TimeoutException catch (e, st) {
+      Error.throwWithStackTrace(Exception('請求逾時，請稍後再試'), st);
     } on FormatException catch (e, st) {
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
