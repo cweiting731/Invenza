@@ -8,10 +8,12 @@ import 'package:invenza/providers/api_route.dart';
 import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
+// 提供filter選項的global Provider
 final importOrderFilterProvider = StateProvider<FilterOptions>((ref) {
   return FilterOptions(deadlineEnd: DateTime.now());
 });
 
+// 讀取filter並處理fetch的Provider
 final importOrdersProvider = StateNotifierProvider<ImportOrdersNotifier, AsyncValue<List<ImportOrder>>>(
         (ref) {
       final repo = ref.read(procurementRepositoryProvider);
@@ -35,11 +37,12 @@ class ImportOrdersNotifier extends StateNotifier<AsyncValue<List<ImportOrder>>> 
     }
   }
 
-  void updateOrders(List<ImportOrder> orders) {
-    state = AsyncData(orders);
-  }
+  // void updateOrders(List<ImportOrder> orders) {
+  //   state = AsyncData(orders);
+  // }
 }
 
+// 提供新增訂單的Provider
 final addImportOrderProvider = StateNotifierProvider.autoDispose<AddImportOrderNotifier, AsyncValue<String?>>((ref) {
   final repo = ref.watch(procurementRepositoryProvider);
   return AddImportOrderNotifier(repo);
@@ -61,6 +64,7 @@ class AddImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
   }
 }
 
+// 提供編輯訂單的Provider
 final editImportOrderProvider = StateNotifierProvider.autoDispose<EditImportOrderNotifier, AsyncValue<String?>>((ref) {
   final repo = ref.watch(procurementRepositoryProvider);
   return EditImportOrderNotifier(repo);
@@ -86,6 +90,7 @@ class EditImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
   }
 }
 
+// 提供刪除訂單的Provider
 final deleteImportOrderProvider = StateNotifierProvider.autoDispose<DeleteImportOrderNotifier, AsyncValue<String?>>((ref) {
   final repo = ref.watch(procurementRepositoryProvider);
   return DeleteImportOrderNotifier(repo);
@@ -111,6 +116,7 @@ class DeleteImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
   }
 }
 
+// 提供ProcurementRepository的Provider
 final procurementRepositoryProvider = Provider<ProcurementRepository>((ref) {
   final api = ref.read(apiClientProvider);
   final user = ref.read(userProvider);
