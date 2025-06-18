@@ -47,16 +47,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
               ref.invalidate(importOrdersProvider); // 刷新資料
             }
           },
-          loading: () {
-            if (mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('⌛ 正在刪除中...'),
-                  duration: Duration(seconds: 2),
-              ),
-              );
-            }
-          },
+          loading: () {},
           error: (e, _) {
             if (mounted) {
               ScaffoldMessenger.of(context).showSnackBar(
