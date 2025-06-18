@@ -14,7 +14,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderStateMixin {
-  int _index = 1;
+  int _index = 0;
   final List<TabItem> tabItems = [
     TabItem(
       title: '首頁',
