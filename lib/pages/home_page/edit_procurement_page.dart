@@ -15,10 +15,10 @@ import 'package:invenza/widgets/text_form.dart';
 enum EditMode { add, edit }
 
 class EditProcurementPage extends ConsumerStatefulWidget {
-  ImportOrder importOrder;
-  EditMode editMode;
+  final ImportOrder importOrder;
+  final EditMode editMode;
 
-  EditProcurementPage({super.key, required this.importOrder, required this.editMode});
+  const EditProcurementPage({super.key, required this.importOrder, required this.editMode});
 
   @override
   ConsumerState<EditProcurementPage> createState() => _AddProcurementDialogState();
