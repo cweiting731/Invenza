@@ -61,6 +61,39 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
     }
   }
 
+  bool haveProcurementPermission() {
+    final user = state.value;
+    if (user == null) return false; // 未登入
+    // 取user.id最前面一位char，如果是F或是4則表示有採購權限
+    final firstChar = user.id.isNotEmpty ? user.id[0].toUpperCase() : '';
+    if (firstChar == 'F' || firstChar == '4') {
+      return true; // 有採購權限
+    }
+    return false; // 沒有採購權限
+  }
+
+  bool haveInventoryPermission() {
+    final user = state.value;
+    if (user == null) return false; // 未登入
+    // 取user.id最前面一位char，如果是F或是2則表示有庫存權限
+    final firstChar = user.id.isNotEmpty ? user.id[0].toUpperCase() : '';
+    if (firstChar == 'F' || firstChar == '2') {
+      return true; // 有庫存權限
+    }
+    return false; // 沒有庫存權限
+  }
+
+  bool haveSalerPermission() {
+    final user = state.value;
+    if (user == null) return false; // 未登入
+    // 取user.id最前面一位char，如果是F或是1則表示有銷售權限
+    final firstChar = user.id.isNotEmpty ? user.id[0].toUpperCase() : '';
+    if (firstChar == 'F' || firstChar == '1') {
+      return true; // 有銷售權限
+    }
+    return false; // 沒有銷售權限
+  }
+
   void reset() {
     state = const AsyncValue.data(null);
   }
