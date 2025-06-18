@@ -203,7 +203,7 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
             child: Text('取消'),
           ),
           ElevatedButton(
-            onPressed: () async {
+            onPressed: () {
               Navigator.of(context).pop(true); // 關閉對話框並返回 true
             },
             child: Text('刪除'),
