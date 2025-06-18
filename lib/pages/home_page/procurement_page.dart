@@ -78,7 +78,11 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
           IconButton(
             icon: Icon(Icons.filter_alt),
             onPressed: () => _showFilterOptions(), 
-          )
+          ), 
+          IconButton(
+            icon: Icon(Icons.refresh),
+            onPressed: () => ref.invalidate(importOrdersProvider), 
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(

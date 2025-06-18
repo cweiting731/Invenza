@@ -32,6 +32,10 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
             icon: const Icon(Icons.filter_alt),
             onPressed: () => _showFilterOption(),
           ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () => ref.invalidate(inventoryItemsProvider), 
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
