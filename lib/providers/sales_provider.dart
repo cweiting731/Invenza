@@ -158,7 +158,7 @@ class SalesRepository {
         throw Exception('尚未登入，你怎麼進來的?');
       }
 
-      await _api.post(
+      await _api.put(
         ApiRoute.getRoute('sales-update-data'),
         order, 
         token: _user.jwtToken!
