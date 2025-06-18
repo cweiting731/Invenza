@@ -3,6 +3,17 @@ enum InventoryFilterType {
   inventoryNow, 
   inventoryFuture,
 }
+extension InventoryFilterTypeExtension on InventoryFilterType {
+  String get displayName {
+    switch (this) {
+      case InventoryFilterType.inventoryNow:
+        return '現有庫存';
+      case InventoryFilterType.inventoryFuture:
+        return '未來庫存';
+    }
+  }
+}
+
 class FilterOptions {
   final String? commodityName;
   final String? commodityType;

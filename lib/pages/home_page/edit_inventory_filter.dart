@@ -94,7 +94,7 @@ class _EditInventoryFilterState extends ConsumerState<EditInventoryFilterPage> {
                   items: InventoryFilterType.values.map((type) {
                     return DropdownMenuItem(
                       value: type,
-                      child: Text(type.toString().split('.').last),
+                      child: Text(type.displayName),
                     );
                   }).toList(),
                   onChanged: (value) {
