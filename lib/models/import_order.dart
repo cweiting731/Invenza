@@ -59,8 +59,8 @@ class ImportOrder implements Serializable{
       "id" : id,
       "commodity" : commodity?.toJson(),
       "supplier" : supplier?.toJson(),
-      "orderTimeStamp" : orderTimeStamp != null ? formatter.format(orderTimeStamp!) : null,
-      "deadlineTimeStamp" : deadlineTimeStamp != null ? formatter.format(deadlineTimeStamp!) : null,
+      "orderTimeStamp" : parseDateTime(orderTimeStamp),
+      "deadlineTimeStamp" : parseDateTime(deadlineTimeStamp),
       "responsible" : responsible?.toJson(),
     });
   }
