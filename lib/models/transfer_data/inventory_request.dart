@@ -43,6 +43,7 @@ class InventoryRequest implements Serializable{
       'commodityType': commodity.type,
       'requestQuantity': requestQuantity,
       'target': target.toString().split('.').last,
+      'responsible': responsible.toJson(),
     };
   }
 }
