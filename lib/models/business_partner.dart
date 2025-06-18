@@ -18,4 +18,11 @@ class BusinessPartner implements Contactable{
     "association" : association.toJson()
   };
 
+  factory BusinessPartner.fromJson(Map<String, dynamic> json) {
+    return BusinessPartner(
+      json['name'],
+      json['id'],
+      Association.fromJson(json['association']),
+    );
+  }
 }

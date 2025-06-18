@@ -40,4 +40,12 @@ class TransactionValue {
     "quantity" : quantity,
     "totalCost" : totalCost
   };
+
+  factory TransactionValue.fromJson(Map<String, dynamic> json) {
+    return TransactionValue(
+      unitPrice: json['unitPrice']?.toDouble(),
+      quantity: json['quantity']?.toDouble(),
+      totalCost: json['totalCost']?.toDouble(),
+    );
+  }
 }

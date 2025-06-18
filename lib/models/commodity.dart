@@ -11,4 +11,13 @@ class Commodity {
     "type" : type,
     "transactionValue" : transactionValue?.toJson()
   };
+
+  factory Commodity.fromJson(Map<String, dynamic> json) {
+    final transactionValue = json['transactionValue'];
+    return Commodity(
+      json['name'],
+      json['type'],
+      transactionValue != null ? TransactionValue.fromJson(transactionValue) : null,
+    );
+  }
 }

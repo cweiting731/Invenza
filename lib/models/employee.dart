@@ -17,4 +17,13 @@ class Employee implements Contactable {
     "id" : id,
     "association" : association.toJson(),
   };
+
+  factory Employee.fromJson(Map<String, dynamic> json) {
+    return Employee(
+      json['name'],
+      json['id'],
+      Association.fromJson(json['association']),
+      jwtToken: json['jwtToken'],
+    );
+  }
 }

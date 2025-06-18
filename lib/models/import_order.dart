@@ -38,43 +38,14 @@ class ImportOrder implements Serializable{
       deadlineTimeStamp = null;
     }
 
-    double quantity = 0.0;
-    try {
-      quantity = commodity['transactionValue']['quantity']?.toDouble();
-    } catch (_) {
-    }
-
-    final order = ImportOrder(
+    return ImportOrder(
       id: json['id'],
-      commodity: Commodity(
-          commodity['name'],
-          commodity['type'],
-          TransactionValue(
-              unitPrice: commodity['transactionValue']['unitPrice'],
-              quantity: quantity,
-              totalCost: commodity['transactionValue']['totalCost']
-          ),
-      ),
-      supplier: BusinessPartner(
-          supplier['name'],
-          supplier['id'],
-          Association(
-            email: supplier['association']['email'],
-            phone: supplier['association']['phone']
-          )
-      ),
+      commodity: Commodity.fromJson(commodity),
+      supplier: BusinessPartner.fromJson(supplier),
       orderTimeStamp: orderTimeStamp,
       deadlineTimeStamp: deadlineTimeStamp,
-      responsible: Employee(
-          responsible['name'],
-          responsible['id'],
-          Association(
-            email: responsible['association']['email'],
-            phone: responsible['association']['phone']
-          )
-      )
+      responsible: Employee.fromJson(responsible),
     );
-    return order;
   }
 
   static String? parseDateTime(DateTime? dateTime) {
