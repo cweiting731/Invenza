@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/pages/home_page/inventory_page.dart';
 import 'package:invenza/pages/home_page/procurement_page.dart';
+import 'package:invenza/pages/home_page/sales_page.dart';
 import '../../providers/auth_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
@@ -32,13 +33,13 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
         title: '庫存',
         idleIcon: Icons.inventory_2_outlined,
         selectedIcon: Icons.inventory_2,
-        page: InventoryPage()
+        page: InventoryPage(),
     ),
     TabItem(
         title: '出貨列表',
         idleIcon: Icons.output,
         selectedIcon: Icons.output_sharp,
-        page: Center(child: Text('這是出貨列表'),)
+        page: SalesPage(),
     ),
     TabItem(
         title: '行事曆',
