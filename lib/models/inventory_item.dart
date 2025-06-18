@@ -1,11 +1,11 @@
 import 'package:invenza/models/commodity.dart';
 
 class InventoryItem {
-  Commodity commodity;
-  double stockQuantity;
-  double expectedImportQuantity;
-  double expectedExportQuantity;
-  double futureStockQuantity;
+  Commodity? commodity;
+  double? stockQuantity;
+  double? expectedImportQuantity;
+  double? expectedExportQuantity;
+  double? futureStockQuantity;
 
   InventoryItem(this.commodity, this.stockQuantity, this.expectedImportQuantity, this.expectedExportQuantity, this.futureStockQuantity);
 
