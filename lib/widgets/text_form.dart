@@ -107,9 +107,11 @@ Widget normalTextFormFieldWithoutValidator({
   required TextEditingController controller,
   required String label,
   required IconData icon,
+  bool readOnly = false,
 }) {
   return TextFormField(
     controller: controller,
+    readOnly: readOnly,
     decoration: InputDecoration(
       labelText: label,
       prefixIcon: Icon(icon),
