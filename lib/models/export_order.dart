@@ -53,15 +53,19 @@ class ExportOrder implements Serializable {
     );
   }
 
+  static String? parseDateTime(DateTime? dateTime) {
+    if (dateTime == null) return null;
+    return DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+  }
+
   @override
   String serialization() {
-    final formatter = DateFormat("yyyy-MM-dd HH:mm");
     return jsonEncode({
       "id": id,
       "commodity": commodity?.toJson(),
       "distributor": distributor?.toJson(),
-      "orderTimeStamp": orderTimeStamp != null ? formatter.format(orderTimeStamp!) : null,
-      "deadlineTimeStamp": deadlineTimeStamp != null ? formatter.format(deadlineTimeStamp!) : null,
+      "orderTimeStamp": parseDateTime(orderTimeStamp),
+      "deadlineTimeStamp": parseDateTime(deadlineTimeStamp),
       "responsible": responsible?.toJson(),
     });
   }
