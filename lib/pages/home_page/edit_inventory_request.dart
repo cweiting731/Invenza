@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/commodity.dart';
-import 'package:invenza/models/employee.dart';
 import 'package:invenza/models/inventory_item.dart';
 import 'package:invenza/models/transfer_data/inventory_request.dart';
 import 'package:invenza/providers/api_provider.dart';

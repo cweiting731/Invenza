@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/providers/procurement_provider.dart';
 import 'package:invenza/widgets/text_form.dart';
@@ -14,7 +13,6 @@ class EditProcurementFilter extends ConsumerStatefulWidget {
 }
 
 class _EditProcurementFilterState extends ConsumerState<EditProcurementFilter> {
-  bool _initialized = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _commodityNameController = TextEditingController();
   final TextEditingController _commodityTypeController = TextEditingController();

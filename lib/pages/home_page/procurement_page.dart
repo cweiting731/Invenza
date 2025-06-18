@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/import_order.dart';
-import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/pages/home_page/edit_procurement_filter.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/widgets/text_form.dart';
