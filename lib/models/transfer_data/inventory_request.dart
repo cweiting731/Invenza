@@ -8,6 +8,17 @@ enum RequestTarget {
   procurement,
   saler,
 }
+extension RequestTargetExtension on RequestTarget {
+  String get displayName {
+    switch (this) {
+      case RequestTarget.procurement:
+        return '採購部';
+      case RequestTarget.saler:
+        return '銷售部';
+    }
+  }
+}
+
 class InventoryRequest implements Serializable{
   final Commodity commodity;
   final double requestQuantity; // 申請的數量
