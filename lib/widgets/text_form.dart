@@ -87,9 +87,11 @@ Widget normalTextFormField({
   required String label,
   required IconData icon,
   String? Function(String?)? validator,
+  bool readOnly = false,
 }) {
   return TextFormField(
     controller: controller,
+    readOnly: readOnly,
     decoration: InputDecoration(
       labelText: label,
       prefixIcon: Icon(icon),
