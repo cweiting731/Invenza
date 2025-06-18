@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:invenza/models/inventory_item.dart';
 import 'package:invenza/models/transfer_data/filter_options.dart';
 import 'package:invenza/pages/home_page/edit_inventory_filter.dart';
+import 'package:invenza/pages/home_page/edit_inventory_request.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/inventory_provider.dart';
 
@@ -57,7 +59,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
                 child: InkWell(
                   onLongPress: () {
                     // 這裡可以添加長按事件的處理邏輯
-                    print('Item 長按了: ${item.commodity?.name}');
+                    _openEditInventoryRequestPage(inventoryItem: item);
                   },
                   child: ExpansionTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -108,7 +110,23 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
     }
   }
 
-  Future<void> _openEditInventoryRequestPage() async {
+  Future<void> _openEditInventoryRequestPage({InventoryItem? inventoryItem}) async {
+    final result = await Navigator.push<bool>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => EditInventoryRequestPage(inventoryItem: inventoryItem,),
+      ),
+    );
 
+    if (result == true && mounted) {
+      // 如果返回值是 true，表示新增或編輯成功
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('✅ 新增庫存請求成功！'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+      // ref.invalidate(inventoryItemsProvider);
+    }
   }
 }
