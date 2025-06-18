@@ -4,6 +4,7 @@ import 'package:invenza/models/inventory_item.dart';
 import 'package:invenza/pages/home_page/edit_inventory_filter.dart';
 import 'package:invenza/pages/home_page/edit_inventory_request.dart';
 import 'package:invenza/providers/api_provider.dart';
+import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/providers/inventory_provider.dart';
 
 class InventoryPage extends ConsumerStatefulWidget {
@@ -23,6 +24,7 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
   Widget build(BuildContext context) {
     final asyncItems = ref.watch(inventoryItemsProvider);
     final api = ref.read(apiClientProvider);
+    final haveInventoryPermission = ref.read(authProvider.notifier).haveInventoryPermission();
 
     return Scaffold(
       appBar: AppBar(
@@ -38,11 +40,13 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _openEditInventoryRequestPage(),
-        tooltip: '新增庫存請求',
-        child: const Icon(Icons.add),
-      ),
+      floatingActionButton: haveInventoryPermission
+          ? FloatingActionButton(
+              onPressed: () => _openEditInventoryRequestPage(),
+              tooltip: '新增庫存請求',
+              child: const Icon(Icons.add),
+            )
+          : null,
       body: asyncItems.when(
         loading: () => const Center(child: CircularProgressIndicator(),),
         error: (err, _) => Center(child: Text(api.formatErrorMessage(err)),),
@@ -62,7 +66,9 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
                 child: InkWell(
                   onLongPress: () {
                     // 這裡可以添加長按事件的處理邏輯
-                    _openEditInventoryRequestPage(inventoryItem: item);
+                    if (haveInventoryPermission) {
+                      _openEditInventoryRequestPage(inventoryItem: item);
+                    }
                   },
                   child: ExpansionTile(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
