@@ -12,7 +12,8 @@ class ApiRoute {
     'procurement-add-data' : '/api/procurement/add-data',
     'procurement-update-data' : '/api/procurement/update-data',
     'procurement-delete-data' : '/api/procurement/delete-data',
-    'inventory-get-data' : '/api/inventory/get-data'
+    'inventory-get-data' : '/api/inventory/get-data', 
+    'inventory-add-request' : '/api/inventory/add-request',
   };
 
   static String getRoute(String type) => '$_serverAddress${_apiRoute[type]}';
