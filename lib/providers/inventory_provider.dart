@@ -39,6 +39,27 @@ class InventoryItemsNotifier extends StateNotifier<AsyncValue<List<InventoryItem
   }
 }
 
+final addInventoryRequestProvider = StateNotifierProvider.autoDispose<AddInventoryRequestNotifier, AsyncValue<String?>>((ref) {
+  final repo = ref.watch(inventoryRepositoryProvider);
+  return AddInventoryRequestNotifier(repo);
+});
+
+class AddInventoryRequestNotifier extends StateNotifier<AsyncValue<String?>> {
+  final InventoryRepository _repo;
+
+  AddInventoryRequestNotifier(this._repo) : super(const AsyncData(null));
+
+  Future<void> addRequest(InventoryRequest request) async {
+    state = const AsyncLoading();
+    try {
+      await _repo.addRequest(request);
+      state = const AsyncData('success');
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
+  }
+}
+
 // 提供InventoryRepository的Provider
 final inventoryRepositoryProvider = Provider<InventoryRepository> ((ref) {
   final api = ref.read(apiClientProvider);
