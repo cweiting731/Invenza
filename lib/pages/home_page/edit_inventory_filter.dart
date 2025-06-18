@@ -57,6 +57,9 @@ class _EditInventoryFilterState extends ConsumerState<EditInventoryFilterPage> {
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
+              if (!_formKey.currentState!.validate()) {
+                return;
+              }
               final filter = FilterOptions(
                 commodityName: _commodityNameController.text.isNotEmpty ? _commodityNameController.text : null,
                 commodityType: _commodityTypeController.text.isNotEmpty ? _commodityTypeController.text : null,
@@ -109,12 +112,32 @@ class _EditInventoryFilterState extends ConsumerState<EditInventoryFilterPage> {
                   controller: _minAmountController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(labelText: '最小庫存數量'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return null;
+                    }
+                    double? minAmount = double.tryParse(value);
+                    if (minAmount == null || minAmount < 0) {
+                      return '最小庫存數量必須為正數';
+                    }
+                    return amountChecker();
+                  },
                 ),
                 const SizedBox(height: 8),
                 TextFormField(
                   controller: _maxAmountController,
                   keyboardType: TextInputType.numberWithOptions(decimal: true),
                   decoration: const InputDecoration(labelText: '最大庫存數量'),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return null;
+                    }
+                    double? maxAmount = double.tryParse(value);
+                    if (maxAmount == null || maxAmount < 0) {
+                      return '最大庫存數量必須為正數';
+                    }
+                    return amountChecker();
+                  },
                 ),
               ],
             ),
@@ -122,5 +145,18 @@ class _EditInventoryFilterState extends ConsumerState<EditInventoryFilterPage> {
         )
       )
     );
+  }
+
+  String? amountChecker() {
+    if (_minAmountController.text.isNotEmpty && _maxAmountController.text.isNotEmpty) {
+      final minAmount = double.tryParse(_minAmountController.text);
+      final maxAmount = double.tryParse(_maxAmountController.text);
+      if (minAmount != null && maxAmount != null) {
+        if (minAmount > maxAmount) {
+          return '最小庫存數量不能大於最大庫存數量';
+        }
+      } 
+    }
+    return null;
   }
 }
