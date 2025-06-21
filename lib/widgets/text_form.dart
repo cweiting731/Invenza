@@ -5,6 +5,7 @@ import 'package:invenza/models/transaction_value.dart';
 
 Widget responsibleText({
   Employee? responsible,
+  String? label = '負責人',
   required BuildContext context,
 }) {
   return TextButton(
@@ -12,18 +13,18 @@ Widget responsibleText({
       showDialog(
         context: context, 
         builder: (context) => AlertDialog(
-          title: Text('負責人資訊'),
+          title: Text('$label資訊'),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('姓名: ${responsible?.name ?? '查無負責人姓名'}'),
+              Text('姓名: ${responsible?.name ?? '查無${label}姓名'}\n'),
               const SizedBox(height: 8,),
-              Text('ID: ${responsible?.id ?? '查無負責人ID'}\n'),
+              Text('ID: ${responsible?.id ?? '查無${label}ID'}\n'),
               const SizedBox(height: 8,),
-              Text('email: ${responsible?.association.email ?? '查無負責人email'}\n'),
+              Text('email: ${responsible?.association.email ?? '查無${label}email'}\n'),
               const SizedBox(height: 8,),
-              Text('電話: ${responsible?.association.phone ?? '查無負責人電話'}\n'),
+              Text('電話: ${responsible?.association.phone ?? '查無${label}電話'}\n'),
             ],
           ),
           actions: [
@@ -35,7 +36,7 @@ Widget responsibleText({
         ),
       );
     }, 
-    child: Text('負責人: ${responsible?.name}'),
+    child: Text('${label}: ${responsible?.name}'),
   );
 }
 
