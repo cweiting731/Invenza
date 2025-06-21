@@ -46,4 +46,13 @@ class InventoryRequest implements Serializable{
       'responsible': responsible.toJson(),
     };
   }
+
+  factory InventoryRequest.fromJson(Map<String, dynamic> json) {
+    return InventoryRequest(
+      commodity: Commodity(json['commodityName'], json['commodityType'], null),
+      requestQuantity: json['requestQuantity'],
+      target: RequestTarget.values.firstWhere((e) => e.toString() == 'RequestTarget.${json['target']}'),
+      responsible: Employee.fromJson(json['responsible']),
+    );
+  }
 }
