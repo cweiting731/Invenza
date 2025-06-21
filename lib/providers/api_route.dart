@@ -11,6 +11,10 @@ class ApiRoute {
     'dashboard-get-procurement-requests' : '/api/dashboard/get-procurement-requests',
     'dashboard-get-saler-requests' : '/api/dashboard/get-saler-requests',
     'dashboard-get-inventory-data' : '/api/dashboard/get-inventory-data',
+    'dashboard-get-user-requests' : '/api/dashboard/get-user-requests',
+    'dashboard-accept-request' : '/api/dashboard/accept-request',
+    'dashboard-abandon-request' : '/api/dashboard/abandon-request',
+    'dashboard-finished-request' : '/api/dashboard/finished-request',
 
     'procurement-get-data' : '/api/procurement/get-data',
     'procurement-add-data' : '/api/procurement/add-data',
