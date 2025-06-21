@@ -67,6 +67,23 @@ class _EditProcurementFilterState extends ConsumerState<EditProcurementFilter> {
         ),
         title: const Text('編輯採購篩選條件'),
         actions: [
+          // 清除篩選條件按鈕
+          IconButton(
+            icon: const Icon(Icons.format_clear),
+            onPressed: () {
+              // 清除篩選條件
+              _commodityNameController.clear();
+              _commodityTypeController.clear();
+              _supplierController.clear();
+              _supplierIdController.clear();
+              _orderTimeStartController.clear();
+              _orderTimeEndController.clear();
+              _deadlineStartController.clear();
+              _deadlineEndController.clear();
+              _responsibleController.clear();
+              _responsibleIdController.clear();
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {

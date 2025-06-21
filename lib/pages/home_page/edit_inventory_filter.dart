@@ -54,6 +54,20 @@ class _EditInventoryFilterState extends ConsumerState<EditInventoryFilterPage> {
         ),
         title: const Text('編輯庫存篩選條件'),
         actions: [
+          // 清除篩選條件按鈕
+          IconButton(
+            icon: const Icon(Icons.format_clear),
+            onPressed: () {
+              _commodityNameController.clear();
+              _commodityTypeController.clear();
+              _minAmountController.clear();
+              _maxAmountController.clear();
+              setState(() {
+                _selectedType = null;
+              });
+            },
+          ),
+          // Save button
           IconButton(
             icon: const Icon(Icons.check),
             onPressed: () {
