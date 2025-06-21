@@ -6,13 +6,7 @@ import 'package:invenza/models/transfer_data/auth_data.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/api_route.dart';
-import 'package:invenza/providers/dashboard_provider.dart';
-import 'package:invenza/providers/forgot_password_provider.dart';
-import 'package:invenza/providers/inventory_provider.dart';
-import 'package:invenza/providers/issue_report_provider.dart';
 import 'package:invenza/providers/log_provider.dart';
-import 'package:invenza/providers/procurement_provider.dart';
-import 'package:invenza/providers/sales_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
 import '../services/log_service.dart';
