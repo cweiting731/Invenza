@@ -9,6 +9,7 @@ Widget responsibleText({
   required BuildContext context,
 }) {
   return TextButton(
+    style: TextButton.styleFrom(padding: EdgeInsets.zero),
     onPressed: () {
       showDialog(
         context: context, 
