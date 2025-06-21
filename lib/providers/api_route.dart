@@ -8,6 +8,10 @@ class ApiRoute {
     'forgot-password' : '/api/auth/forgot-password',
     'issue-report' : '/api/issue-report',
 
+    'dashboard-get-procurement-requests' : '/api/dashboard/get-procurement-requests',
+    'dashboard-get-saler-requests' : '/api/dashboard/get-saler-requests',
+    'dashboard-get-inventory-data' : '/api/dashboard/get-inventory-data',
+
     'procurement-get-data' : '/api/procurement/get-data',
     'procurement-add-data' : '/api/procurement/add-data',
     'procurement-update-data' : '/api/procurement/update-data',
