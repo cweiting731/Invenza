@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/models/inventory_item.dart';
 import 'package:invenza/models/transfer_data/inventory_request.dart';
@@ -8,12 +9,14 @@ import 'package:invenza/providers/auth_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
 class DashboardState {
+  final List<InventoryRequest>? userRequests;
   final List<InventoryRequest>? procurementData;
   final List<InventoryRequest>? salesData;
   final List<InventoryItem>? inventoryData;
   final String? errorMessage;
 
   DashboardState({
+    this.userRequests,
     this.procurementData,
     this.salesData,
     this.inventoryData,
@@ -21,12 +24,14 @@ class DashboardState {
   });
 
   DashboardState copyWith({
+    List<InventoryRequest>? userRequests,
     List<InventoryRequest>? procurementData,
     List<InventoryRequest>? salesData,
     List<InventoryItem>? inventoryData,
     String? errorMessage,
   }) {
     return DashboardState(
+      userRequests: userRequests ?? this.userRequests,
       procurementData: procurementData ?? this.procurementData,
       salesData: salesData ?? this.salesData,
       inventoryData: inventoryData ?? this.inventoryData,
@@ -64,6 +69,7 @@ class DashboardNotifier extends StateNotifier<DashboardState> {
       await fetchProcurementData();
       await fetchSalesData();
       await fetchInventoryData();
+      await fetchUserRequests();
     } catch (e) {
       // Handle errors if needed
       
@@ -123,5 +129,97 @@ class DashboardNotifier extends StateNotifier<DashboardState> {
       state = state.copyWith(inventoryData: [], errorMessage: null);
     }
   }
+
+  Future<void> fetchUserRequests() async {
+    try {
+      if (user == null || user!.jwtToken == null) {
+        throw Exception('尚未登入，你怎麼進來的?');
+      }
+      final data = await api.get(
+        ApiRoute.getRoute('dashboard-get-user-requests'),
+        queryParams: {
+          'id': user!.id
+        },
+        token: user!.jwtToken!,
+      );
+      final userRequests = (data['data'] as List)
+          .map((item) => InventoryRequest.fromJson(item))
+          .toList();
+      state = state.copyWith(userRequests: userRequests);
+    } catch (e) {
+      state = state.copyWith(userRequests: [], errorMessage: null);
+    }
+  }
   
+  Future<void> acceptRequest(InventoryRequest request) async {
+    try {
+      if (user == null || user!.jwtToken == null) {
+        throw Exception('尚未登入，你怎麼進來的?');
+      }
+      // 將請求的承接者設置為當前用戶
+      request.checker = user;
+
+      await api.put(
+        ApiRoute.getRoute('dashboard-accept-request'),
+        request,
+        token: user!.jwtToken!,
+      );
+
+      if (request.target == RequestTarget.procurement) {
+        fetchProcurementData(); // 更新採購數據
+      }
+      else {
+        fetchSalesData(); // 更新銷售數據
+      }
+      fetchUserRequests(); // 更新用戶請求數據
+    } catch (e) {
+      throw Exception('承接請求失敗: ${api.formatErrorMessage(e)}');
+    }
+  }
+
+  Future<void> abandonRequest(InventoryRequest request) async {
+    try {
+      if (user == null || user!.jwtToken == null) {
+        throw Exception('尚未登入，你怎麼進來的?');
+      }
+      // 將請求的承接者設置為null
+      request.checker = null;
+
+      await api.put(
+        ApiRoute.getRoute('dashboard-abandon-request'),
+        request,
+        token: user!.jwtToken!,
+      );
+
+      if (request.target == RequestTarget.procurement) {
+        fetchProcurementData(); // 更新採購數據
+      }
+      else {
+        fetchSalesData(); // 更新銷售數據
+      }
+      fetchUserRequests(); // 更新用戶請求數據
+    } catch (e) {
+      throw Exception('放棄請求失敗: ${api.formatErrorMessage(e)}');
+    }
+  }
+
+  Future<void> finishedRequest(InventoryRequest request) async {
+    try {
+      if (user == null || user!.jwtToken == null) {
+        throw Exception('尚未登入，你怎麼進來的?');
+      }
+      // 將請求的狀態設置為已完成
+      request.isFinished = true;
+
+      await api.put(
+        ApiRoute.getRoute('dashboard-finished-request'),
+        request,
+        token: user!.jwtToken!,
+      );
+
+      fetchUserRequests(); // 更新用戶請求數據
+    } catch (e) {
+      throw Exception('完成請求失敗: ${api.formatErrorMessage(e)}');
+    }
+  }
 }
