@@ -54,7 +54,6 @@ class ImportOrder implements Serializable{
 
   @override
   String serialization() {
-    final formatter = DateFormat("yyyy-MM-dd HH:mm");
     return jsonEncode({
       "id" : id,
       "commodity" : commodity?.toJson(),
