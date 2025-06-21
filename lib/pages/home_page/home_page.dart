@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:invenza/models/employee.dart';
+import 'package:invenza/pages/home_page/dashboard.dart';
 import 'package:invenza/pages/home_page/inventory_page.dart';
 import 'package:invenza/pages/home_page/procurement_page.dart';
 import 'package:invenza/pages/home_page/sales_page.dart';
@@ -21,7 +22,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
       title: '首頁',
       idleIcon: Icons.dashboard_outlined,
       selectedIcon: Icons.dashboard,
-      page: Center(child: Text('這是首頁'),)
+      page: Dashboard(),
     ),
     TabItem(
         title: '進貨列表',
