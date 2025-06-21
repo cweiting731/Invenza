@@ -57,7 +57,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.watch(userProvider);
+    final user = ref.watch(authProvider.notifier).user;
     if (user == null || user.jwtToken == null || user.jwtToken!.isEmpty) {
       return Scaffold(
         body: Center(child: Text('請先登入')),

@@ -48,7 +48,10 @@ final dashboardErrorProvider = StateProvider<String?>((ref) => null);
 
 final dashboardProvider = StateNotifierProvider<DashboardNotifier, DashboardState>(
   (ref) {
-    final user = ref.read(userProvider);
+    final user = ref.watch(authProvider).maybeWhen(
+      data: (u) => u,
+      orElse: () => null,
+    );
     final api = ref.read(apiClientProvider);
     return DashboardNotifier(user: user, api: api, ref: ref);
   },

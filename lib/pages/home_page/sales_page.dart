@@ -28,7 +28,7 @@ class _SalesPageState extends ConsumerState<SalesPage> {
   Widget build(BuildContext context) {
     final asyncOrders = ref.watch(exportOrdersProvider);
     final api = ref.read(apiClientProvider);
-    final user = ref.read(userProvider);
+    final user = ref.read(authProvider.notifier).user;
     final bool haveSalesPermission = ref.read(authProvider.notifier).haveSalerPermission();
     // 監聽刪除狀態，處理 UI
     ref.listen<AsyncValue<String?>>(deleteExportOrderProvider, (previous, next) {

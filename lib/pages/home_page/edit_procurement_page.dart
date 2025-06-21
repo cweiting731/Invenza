@@ -78,7 +78,7 @@ class _AddProcurementDialogState extends ConsumerState<EditProcurementPage> {
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.read(userProvider);
+    final user = ref.watch(authProvider.notifier).user;
     final api = ref.read(apiClientProvider);
     final format = DateFormat('yyyy-MM-dd HH:mm');
     if (user == null || user.jwtToken == null) {

@@ -63,7 +63,10 @@ class AddInventoryRequestNotifier extends StateNotifier<AsyncValue<String?>> {
 // 提供InventoryRepository的Provider
 final inventoryRepositoryProvider = Provider<InventoryRepository> ((ref) {
   final api = ref.read(apiClientProvider);
-  final user = ref.read(userProvider);
+  final user = ref.watch(authProvider).maybeWhen(
+    data: (u) => u,
+    orElse: () => null,
+  );
   return InventoryRepository(api, user);
 });
 

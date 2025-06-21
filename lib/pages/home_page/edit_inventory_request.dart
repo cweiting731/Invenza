@@ -69,7 +69,7 @@ class _EditInventoryRequestPageState extends ConsumerState<EditInventoryRequestP
 
   @override
   Widget build(BuildContext context) {
-    final user = ref.read(userProvider);
+    final user = ref.watch(authProvider.notifier).user;
     final api = ref.read(apiClientProvider);
 
     if (user == null || user.jwtToken == null) {

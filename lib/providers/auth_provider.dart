@@ -1,36 +1,39 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:invenza/logger/logger.dart';
 import 'package:invenza/models/association.dart';
 import 'package:invenza/models/transfer_data/auth_data.dart';
 import 'package:invenza/models/employee.dart';
 import 'package:invenza/providers/api_provider.dart';
 import 'package:invenza/providers/api_route.dart';
+import 'package:invenza/providers/dashboard_provider.dart';
+import 'package:invenza/providers/forgot_password_provider.dart';
+import 'package:invenza/providers/inventory_provider.dart';
+import 'package:invenza/providers/issue_report_provider.dart';
 import 'package:invenza/providers/log_provider.dart';
+import 'package:invenza/providers/procurement_provider.dart';
+import 'package:invenza/providers/sales_provider.dart';
 import 'package:invenza/services/api_client.dart';
 
 import '../services/log_service.dart';
-
-final userProvider = Provider<Employee?>( (ref) {
-  return ref.read(authProvider).maybeWhen(
-    data: (e) => e,
-    orElse: () => null,
-  );
-});
 
 final authProvider = StateNotifierProvider<AuthController, AsyncValue<Employee?>>(
   (ref) {
     final logger = ref.read(logProvider);
     final api = ref.read(apiClientProvider);
-    return AuthController(logger, api);
+    return AuthController(logger, api, ref);
   }
 );
 
 class AuthController extends StateNotifier<AsyncValue<Employee?>> {
   final LogService _logger;
   final ApiClient _api;
+  final Ref ref;
 
-  AuthController(this._logger, this._api)
+  AuthController(this._logger, this._api, this.ref)
       : super(const AsyncValue.data(null));
+
+  Employee? get user => state.value;
 
   Future<void> login(String account, String password, GlobalKey<FormState> formKey) async {
     if (!formKey.currentState!.validate()) return; // 確認account, password格式是否正確

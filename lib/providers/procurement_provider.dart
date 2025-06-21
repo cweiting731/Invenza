@@ -118,7 +118,10 @@ class DeleteImportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
 // 提供ProcurementRepository的Provider
 final procurementRepositoryProvider = Provider<ProcurementRepository>((ref) {
   final api = ref.read(apiClientProvider);
-  final user = ref.read(userProvider);
+  final user = ref.watch(authProvider).maybeWhen(
+    data: (u) => u,
+    orElse: () => null,
+  );
   return ProcurementRepository(api, user);
 });
 

@@ -28,9 +28,9 @@ class _ProcurementPageState extends ConsumerState<ProcurementPage> {
   Widget build(BuildContext context) {
     final asyncOrders = ref.watch(importOrdersProvider);
     final api = ref.read(apiClientProvider);
-    final user = ref.read(userProvider);
+    final user = ref.watch(authProvider.notifier).user;
     final bool haveProcurementPermission = ref.read(authProvider.notifier).haveProcurementPermission();
-
+  
     // 監聽刪除狀態，處理 UI
     ref.listen<AsyncValue<String?>> (
       deleteImportOrderProvider,

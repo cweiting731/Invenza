@@ -106,7 +106,10 @@ class DeleteExportOrderNotifier extends StateNotifier<AsyncValue<String?>> {
 
 final salesRepositoryProvider = Provider<SalesRepository>((ref) {
   final api = ref.watch(apiClientProvider);
-  final user = ref.read(userProvider);
+  final user = ref.watch(authProvider).maybeWhen(
+    data: (u) => u,
+    orElse: () => null,
+  );
   return SalesRepository(api, user);
 });
 
