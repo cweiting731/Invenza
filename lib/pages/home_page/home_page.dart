@@ -5,6 +5,7 @@ import 'package:invenza/models/employee.dart';
 import 'package:invenza/pages/home_page/dashboard.dart';
 import 'package:invenza/pages/home_page/inventory_page.dart';
 import 'package:invenza/pages/home_page/procurement_page.dart';
+import 'package:invenza/pages/home_page/profile_page.dart';
 import 'package:invenza/pages/home_page/sales_page.dart';
 import '../../providers/auth_provider.dart';
 
@@ -43,10 +44,10 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
         page: SalesPage(),
     ),
     TabItem(
-        title: '行事曆',
-        idleIcon: Icons.calendar_today_outlined,
-        selectedIcon: Icons.calendar_month,
-        page: Center(child: Text('這是行事曆'),)
+        title: '個人檔案',
+        idleIcon: Icons.person_outline,
+        selectedIcon: Icons.person,
+        page: ProfilePage()
     ),
   ];
 

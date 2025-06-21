@@ -57,11 +57,23 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
         throw Exception('員工資料缺失，請重新登入或聯繫相關人員');
       }
       Employee employee = Employee(data['name'], data['id'], Association(email: data['email'], phone: data['phone']), jwtToken: data['jwt']);
+      log.d(employee.toJson());
       state = AsyncValue.data(employee); // 表示成功
     }
     catch (e, st) {
       state = AsyncValue.error(e, st);
     }
+  }
+
+  bool haveAdminPermission() {
+    final user = state.value;
+    if (user == null) return false; // 未登入
+    // 取user.id最前面一位char，如果是F則表示有管理員權限
+    final firstChar = user.id.isNotEmpty ? user.id[0].toUpperCase() : '';
+    if (firstChar == 'F') {
+      return true; // 有管理員權限
+    }
+    return false; // 沒有管理員權限
   }
 
   bool haveProcurementPermission() {
@@ -95,6 +107,24 @@ class AuthController extends StateNotifier<AsyncValue<Employee?>> {
       return true; // 有銷售權限
     }
     return false; // 沒有銷售權限
+  }
+
+  String showPosition() {
+    if (haveAdminPermission()) {
+      return '管理員';
+    } else if (haveProcurementPermission()) {
+      return '採購人員';
+    } else if (haveInventoryPermission()) {
+      return '倉管人員';
+    } else if (haveSalerPermission()) {
+      return '銷售人員';
+    }
+    return '未知職位';
+  }
+
+  Future<void> logout() async {
+    // 清除JWT token
+    state = const AsyncValue.data(null);
   }
 
   void reset() {
