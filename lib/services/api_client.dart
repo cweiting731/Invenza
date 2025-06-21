@@ -24,9 +24,14 @@ class ApiClient {
         body: transferData.serialization(),
       );
 
-      log.i('Response headers: ${response.headers}');
-      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(jsonDecode(utf8.decode(response.bodyBytes))) }');
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      final decode = utf8.decode(response.bodyBytes);
+      log.i('url: $url');
+      log.i('Raw response body:\n$decode');
+
+      if (response.statusCode == 204 || decode.trim().isEmpty) return {};
+
+      final data = jsonDecode(decode);
+      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(data) }');
 
       /* TODO: statusCode 各個判斷 */
       if (response.statusCode == 200) {
@@ -59,9 +64,14 @@ class ApiClient {
         },
       );
       
-      log.i('Response headers: ${response.headers}');
-      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(jsonDecode(utf8.decode(response.bodyBytes))) }');
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      final decode = utf8.decode(response.bodyBytes);
+      log.i('url: $url');
+      log.i('Raw response body:\n$decode');
+
+      if (response.statusCode == 204 || decode.trim().isEmpty) return {};
+
+      final data = jsonDecode(decode);
+      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(data) }');
 
       if (response.statusCode == 200) {
         return data;
@@ -92,9 +102,14 @@ class ApiClient {
         body: transferData.serialization(),
       );
 
-      log.i('Response headers: ${response.headers}');
-      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(jsonDecode(utf8.decode(response.bodyBytes))) }');
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      final decode = utf8.decode(response.bodyBytes);
+      log.i('url: $url');
+      log.i('Raw response body:\n$decode');
+
+      if (response.statusCode == 204 || decode.trim().isEmpty) return {};
+
+      final data = jsonDecode(decode);
+      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(data) }');
 
       if (response.statusCode == 200) {
         return data;
@@ -106,6 +121,8 @@ class ApiClient {
     } on TimeoutException catch (e, st) {
       Error.throwWithStackTrace(Exception('請求逾時，請稍後再試'), st);
     } on FormatException catch (e, st) {
+      log.e(e);
+      log.e(st);
       Error.throwWithStackTrace(Exception('資料格式錯誤，請聯繫開發人員'), st);
     } on http.ClientException catch (e, st) {
       Error.throwWithStackTrace(Exception('連線失敗，請確認伺服器是否有開啟'), st);
@@ -124,9 +141,14 @@ class ApiClient {
         },
       );
 
-      log.i('Response headers: ${response.headers}');
-      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(jsonDecode(utf8.decode(response.bodyBytes))) }');
-      final data = jsonDecode(utf8.decode(response.bodyBytes));
+      final decode = utf8.decode(response.bodyBytes);
+      log.i('url: $url');
+      log.i('Raw response body:\n$decode');
+
+      if (response.statusCode == 204 || decode.trim().isEmpty) return {};
+
+      final data = jsonDecode(decode);
+      log.i('Response body (pretty):\n${ JsonEncoder.withIndent('  ').convert(data) }');
 
       if (response.statusCode == 200) {
         return data;
