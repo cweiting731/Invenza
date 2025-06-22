@@ -24,7 +24,8 @@ class _InventoryPageState extends ConsumerState<InventoryPage> {
   Widget build(BuildContext context) {
     final asyncItems = ref.watch(inventoryItemsProvider);
     final api = ref.read(apiClientProvider);
-    final haveInventoryPermission = ref.read(authProvider.notifier).haveInventoryPermission();
+    final haveInventoryPermission = ref.read(authProvider.notifier).haveInventoryPermission() && false;
+    // final haveInventoryPermission = ref.read(authProvider.notifier).haveInventoryPermission();
 
     return Scaffold(
       appBar: AppBar(

@@ -1,8 +1,7 @@
 
 class ApiRoute {
-  // static const _serverAddress = 'http://192.168.215.198:8080';
-  // static const _serverAddress = 'http://localhost:8080';
-  static const _serverAddress = 'http://192.168.209.169:8080';
+  static const _serverAddress = 'http://35.189.164.26:8080';
+  // static const _serverAddress = 'http://192.168.0.110:8080';
   static const Map<String, String> _apiRoute = {
     'auth' : '/api/auth/login',
     'forgot-password' : '/api/auth/forgot-password',
