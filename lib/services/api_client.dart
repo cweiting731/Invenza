@@ -25,7 +25,8 @@ class ApiClient {
       );
 
       final decode = utf8.decode(response.bodyBytes);
-      log.i('url: $url');
+      log.i('url: \n$url');
+      log.i('payload: \n${ JsonEncoder.withIndent('  ').convert(jsonDecode(transferData.serialization())) }');
       log.i('Raw response body:\n$decode');
 
       if (response.statusCode == 204 || decode.trim().isEmpty) return {};
@@ -65,7 +66,8 @@ class ApiClient {
       );
       
       final decode = utf8.decode(response.bodyBytes);
-      log.i('url: $url');
+      log.i('url: \n$url');
+      log.i('uri: \n$uri');
       log.i('Raw response body:\n$decode');
 
       if (response.statusCode == 204 || decode.trim().isEmpty) return {};
