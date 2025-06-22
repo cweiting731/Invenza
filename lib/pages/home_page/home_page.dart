@@ -80,7 +80,7 @@ class _HomePageState extends ConsumerState<HomePage> with SingleTickerProviderSt
           BottomNavigationBarItem(icon: Icon(tabItems[1].idleIcon), label: tabItems[1].title),
           BottomNavigationBarItem(icon: Icon(tabItems[2].idleIcon), label: tabItems[2].title),
           BottomNavigationBarItem(icon: Icon(tabItems[3].idleIcon), label: tabItems[3].title),
-          BottomNavigationBarItem(icon: Icon(tabItems[4].idleIcon), label: tabItems[4].title),
+          // BottomNavigationBarItem(icon: Icon(tabItems[4].idleIcon), label: tabItems[4].title),
         ]
 
       )
