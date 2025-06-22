@@ -1,16 +1,12 @@
 # invenza
 
-A simple ERP system
+這是一個簡易的ERP系統前端實作，使用Flutter部署到手機端
 
 ## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+部署環境，需要Flutter的安裝
+```cmd
+git clone https://github.com/cweiting731/Invenza.git
+cd Invenza
+flutter pub get
+flutter run
+```
