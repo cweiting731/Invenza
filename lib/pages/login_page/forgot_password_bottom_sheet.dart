@@ -32,14 +32,15 @@ class _ForgotPasswordBottomSheetState extends ConsumerState<ForgotPasswordBottom
     emailController.dispose();
     super.dispose();
   }
-
+  String? info;
+  Color infoColor = Colors.black87;
+  bool isTransfer = false;
+  
   @override
   Widget build(BuildContext context) {
     final api = ref.read(apiClientProvider);
 
-    String? info;
-    Color infoColor = Colors.black87;
-    bool isTransfer = false;
+    
 
     ref.listen<AsyncValue<String?>>(forgotPasswordProvider, (previous, next) {
       next.when(
