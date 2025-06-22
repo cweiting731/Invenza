@@ -89,8 +89,8 @@ class InventoryRepository {
         token: _user.jwtToken!
       );
 
-      final List rawData = data['data'];
-      return rawData.map( (item) => InventoryItem.fromJson(item)).toList();
+      final List? rawData = data['data'];
+      return rawData?.map( (item) => InventoryItem.fromJson(item)).toList() ?? [];
     } catch (e) {
       rethrow;
     }

@@ -132,8 +132,8 @@ class SalesRepository {
         token: _user.jwtToken!
       );
 
-      final List rawData = data['data'];
-      return rawData.map( (order) => ExportOrder.fromJson(order)).toList();
+      final List? rawData = data['data'];
+      return rawData?.map((order) => ExportOrder.fromJson(order)).toList() ?? [];
     } catch (e) {
       rethrow;
     }

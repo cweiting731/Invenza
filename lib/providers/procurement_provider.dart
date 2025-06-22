@@ -144,8 +144,8 @@ class ProcurementRepository {
         token: _user.jwtToken!
       );
 
-      final List rawData = data['data'];
-      return rawData.map( (order) => ImportOrder.fromJson(order)).toList();
+      final List? rawData = data['data'];
+      return rawData?.map( (order) => ImportOrder.fromJson(order)).toList() ?? [];
     } catch (e) {
       rethrow;
     }
