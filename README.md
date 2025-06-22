@@ -1,4 +1,5 @@
 # invenza
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/cweiting731/Invenza)
 
 這是一個簡易的ERP系統前端實作，使用Flutter部署到手機端
 
